@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -28,6 +29,11 @@ public class MainActivity extends AppCompatActivity {
     private TextView setLocationText;
     private ProgressDialog pd;
     private boolean ftpConnect;
+
+    private static ArrayList<String> srcFolder = new ArrayList<>();
+    public static void setsrcFolder(ArrayList<String> src_Folder){
+        srcFolder = src_Folder;
+    }
 
 
   /* private  Handler handler = new Handler() {
@@ -141,6 +147,9 @@ public class MainActivity extends AppCompatActivity {
         }*/
     }
 
+    public void transferButton(View view){
+
+    }
 
     @Override
     protected void onResume(){

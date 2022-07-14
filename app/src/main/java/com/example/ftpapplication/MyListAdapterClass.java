@@ -55,6 +55,7 @@ class MyListAdapter extends androidx.recyclerview.widget.RecyclerView.Adapter<My
         holder.flipSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String currentPath = listdata.get(position).getDescription();
 
             }
         });
