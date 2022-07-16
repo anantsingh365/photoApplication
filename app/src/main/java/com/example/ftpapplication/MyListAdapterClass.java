@@ -8,8 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,11 +54,15 @@ class MyListAdapter extends androidx.recyclerview.widget.RecyclerView.Adapter<My
         final MyListData myListData = listdata.get(position);
         holder.textView.setText( listdata.get(position).getDescription().substring(trimString.length()+1));
         holder.imageView.setImageResource( listdata.get(position).getImgId());
-        holder.flipSwitch.setOnClickListener(new View.OnClickListener() {
+        holder.flipSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             @Override
-            public void onClick(View v) {
-                String currentPath = listdata.get(position).getDescription();
-
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.e("Switch Checked",String.valueOf(isChecked));
+                if(isChecked){
+                    String currentPath = listdata.get(position).getDescription();
+                    Log.e("currentPath_Flip_Button",currentPath);
+                    MainActivity.setsrcFolder(currentPath);
+                }
             }
         });
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
@@ -90,7 +96,7 @@ class MyListAdapter extends androidx.recyclerview.widget.RecyclerView.Adapter<My
     }
 
     public static class ViewHolder extends androidx.recyclerview.widget.RecyclerView.ViewHolder  {
-        public Button flipSwitch;
+        public Switch flipSwitch;
         public ImageView imageView;
         public TextView textView;
         public RelativeLayout relativeLayout;

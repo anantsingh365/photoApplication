@@ -18,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -26,17 +28,20 @@ public class MainActivity extends AppCompatActivity {
     private EditText ftpUsername, ftpPassword, ftphostName;
     private EditText ftpPortNumber;
     private Button setLocationButton,connectButton;
-    private TextView setLocationText;
+    private static  TextView setLocationText;
     private ProgressDialog pd;
     private boolean ftpConnect;
+    private MyFTPClientFunctions myFTPClientFunctions;
+    private TextView connectStatusText;
 
-    private static ArrayList<String> srcFolder = new ArrayList<>();
-    public static void setsrcFolder(ArrayList<String> src_Folder){
-        srcFolder = src_Folder;
+    private static Set<String> srcFolder = new HashSet<>();
+    public static void setsrcFolder(String src_Folder){
+        srcFolder.add(src_Folder);
+        setLocationText.setText(src_Folder);
     }
 
 
-  /* private  Handler handler = new Handler() {
+ /* private  Handler handler = new Handler(getMainLooper()) {
 
         public void handleMessage(android.os.Message msg) {
 
@@ -76,7 +81,8 @@ public class MainActivity extends AppCompatActivity {
         ftphostName = findViewById(R.id.hostName);
         setLocationButton = findViewById(R.id.setLocationButton);
         connectButton = findViewById(R.id.connectButton);
-
+        myFTPClientFunctions = new MyFTPClientFunctions();
+        connectStatusText = findViewById(R.id.connectStatusTextView);
     }
 
     public void setLocationButtonPressed(View view){
@@ -88,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void connectButton(View view){
-        MyFTPClientFunctions myFTPClientFunctions = new MyFTPClientFunctions();
 
        /* Log.e("port String",ftpPortNumber.getText().toString());
         int portInt = Integer.parseInt(ftpPortNumber.getText().toString());
@@ -107,23 +112,38 @@ public class MainActivity extends AppCompatActivity {
                 String ftpassword =  ftpPassword.getText().toString();
                 int portInt = Integer.parseInt(ftpPortNumber.getText().toString());
                 ftpConnect = myFTPClientFunctions.ftpConnect(ftpHostName, ftpUserName, ftpassword, portInt);
+                if(ftpConnect) {
+                    String workingDirectory = myFTPClientFunctions.ftpGetCurrentWorkingDirectory();
+                   // String[] directoryListing = myFTPClientFunctions.ftpPrintFilesList(workingDirectory);
+                    Log.e("FileListing", workingDirectory);
 
-                String workingDirectory = myFTPClientFunctions.ftpGetCurrentWorkingDirectory();
-                String[] directoryListing = myFTPClientFunctions.ftpPrintFilesList(workingDirectory+"/Downloads");
-                Log.e("FileListing",workingDirectory);
+                    if(myFTPClientFunctions.ftpChangeDirectory(workingDirectory+"Downloads")){
+                        Log.e("PWD Changed!!","True");
+                        Log.e("Now working Directory is - ",myFTPClientFunctions.ftpGetCurrentWorkingDirectory());
+                    }
+                    myFTPClientFunctions.ftpPrintFilesList(myFTPClientFunctions.ftpGetCurrentWorkingDirectory());
+
+                   if (ftpMakeDefaultFolder("FtpApplicationFolder"))
+                        Log.e("Default Folder Created: ", "True");
+
+                    else
+                        Log.e("Default Folder Created: ", "False");
+                }
 
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
                         //UI Thread work here
-                        if(ftpConnect ==true)  Toast.makeText(getApplicationContext(), "Connection Established ", Toast.LENGTH_SHORT).show();
-
-                        else Toast.makeText(getApplicationContext(),"Error Connecting to the Server",Toast.LENGTH_SHORT).show();
+                        if(ftpConnect ==true) {
+                            Toast.makeText(getApplicationContext(), "Connection Established ", Toast.LENGTH_SHORT).show();
+                            findViewById(R.id.connectStatusTextView);
+                            connectStatusText.setText("Connected");
+                        }else
+                            Toast.makeText(getApplicationContext(),"Error Connecting to the Server",Toast.LENGTH_SHORT).show();
                     }
                 });
             }
         });
-
 
        /*  new Thread(new Runnable(){
 
@@ -145,6 +165,16 @@ public class MainActivity extends AppCompatActivity {
         if(ftpConnect ==true){
             Toast.makeText(getApplicationContext(), "Connection Established ", Toast.LENGTH_SHORT).show();
         }*/
+    }
+
+    public boolean ftpMakeDefaultFolder(String defLocation){
+        String[] directoryListing = myFTPClientFunctions.ftpPrintFilesList(defLocation);
+        for(String directory: directoryListing){
+            if(directory.equals("FtpApplicationFolder")){
+                return true;
+            }
+        }
+        return myFTPClientFunctions.ftpMakeDirectory("FtpApplicationFolder");
     }
 
     public void transferButton(View view){

@@ -85,9 +85,10 @@ class MyFTPClientFunctions {
 
     public boolean ftpChangeDirectory(String directory_path) {
         try {
-            mFTPClient.changeWorkingDirectory(directory_path);
+           return mFTPClient.changeWorkingDirectory(directory_path);
         } catch (Exception e) {
             Log.d(TAG, "Error: could not change directory to " + directory_path);
+            Log.e("Couldn't not create folder",e.toString());
         }
 
         return false;
