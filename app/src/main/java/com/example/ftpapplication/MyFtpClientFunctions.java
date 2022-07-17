@@ -14,9 +14,29 @@ import android.util.Log;
 class MyFTPClientFunctions {
 
     // Now, declare a public FTP client object.
-
     private static final String TAG = "MyFTPClientFunctions";
     public FTPClient mFTPClient = null;
+
+    private boolean status = false;
+    private boolean isConnected = false;
+
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    public boolean isConnected() {
+        return isConnected;
+    }
+
+    public void setConnected(boolean connected) {
+        isConnected = connected;
+    }
+
 
     // Method to connect to FTP server:
     public boolean ftpConnect(String host, String username, String password,
@@ -26,10 +46,11 @@ class MyFTPClientFunctions {
             // connecting to the host
             mFTPClient.connect(host, port);
 
+            isConnected = FTPReply.isPositiveCompletion(mFTPClient.getReplyCode());
             // now check the reply code, if positive mean connection success
-            if (FTPReply.isPositiveCompletion(mFTPClient.getReplyCode())) {
+            if (isConnected) {
                 // login using username & password
-                boolean status = mFTPClient.login(username, password);
+                status = mFTPClient.login(username, password);
 
                 /*
                  * Set File Transfer Mode
@@ -58,11 +79,14 @@ class MyFTPClientFunctions {
         try {
             mFTPClient.logout();
             mFTPClient.disconnect();
+            status = false;
+            isConnected = false;
             return true;
         } catch (Exception e) {
             Log.d(TAG, "Error occurred while disconnecting from ftp server.");
+            status = true;
+            isConnected = true;
         }
-
         return false;
     }
 

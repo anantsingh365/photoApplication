@@ -93,11 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void connectButton(View view){
-
-       /* Log.e("port String",ftpPortNumber.getText().toString());
-        int portInt = Integer.parseInt(ftpPortNumber.getText().toString());
-        Log.e("port After Parsing", String.valueOf(portInt));*/
+    public void connectButton(View view) {
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
@@ -106,24 +102,35 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
 
+                if (myFTPClientFunctions.isStatus()&&myFTPClientFunctions.isConnected()){
+
+                    if(myFTPClientFunctions.ftpDisconnect()){
+                        connectButton.setText("Connect");
+                        connectStatusText.setText("Not Connected");
+                        Log.e("Disconnected Successfully","");
+                    }else{
+                        Log.e("Could Not Disconnect To Ftp","");
+                    }
+
+                }else{
                 //Background work here
                 String ftpHostName = ftphostName.getText().toString();
                 String ftpUserName = ftpUsername.getText().toString();
-                String ftpassword =  ftpPassword.getText().toString();
+                String ftpassword = ftpPassword.getText().toString();
                 int portInt = Integer.parseInt(ftpPortNumber.getText().toString());
                 ftpConnect = myFTPClientFunctions.ftpConnect(ftpHostName, ftpUserName, ftpassword, portInt);
-                if(ftpConnect) {
+                if (ftpConnect) {
                     String workingDirectory = myFTPClientFunctions.ftpGetCurrentWorkingDirectory();
-                   // String[] directoryListing = myFTPClientFunctions.ftpPrintFilesList(workingDirectory);
+                    // String[] directoryListing = myFTPClientFunctions.ftpPrintFilesList(workingDirectory);
                     Log.e("FileListing", workingDirectory);
 
-                    if(myFTPClientFunctions.ftpChangeDirectory(workingDirectory+"Downloads")){
-                        Log.e("PWD Changed!!","True");
-                        Log.e("Now working Directory is - ",myFTPClientFunctions.ftpGetCurrentWorkingDirectory());
+                    if (myFTPClientFunctions.ftpChangeDirectory(workingDirectory + "Downloads")) {
+                        Log.e("PWD Changed!!", "True");
+                        Log.e("Now working Directory is - ", myFTPClientFunctions.ftpGetCurrentWorkingDirectory());
                     }
                     myFTPClientFunctions.ftpPrintFilesList(myFTPClientFunctions.ftpGetCurrentWorkingDirectory());
 
-                   if (ftpMakeDefaultFolder("FtpApplicationFolder"))
+                    if (ftpMakeDefaultFolder("FtpApplicationFolder"))
                         Log.e("Default Folder Created: ", "True");
 
                     else
@@ -134,14 +141,16 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         //UI Thread work here
-                        if(ftpConnect ==true) {
+                        if (ftpConnect == true) {
                             Toast.makeText(getApplicationContext(), "Connection Established ", Toast.LENGTH_SHORT).show();
                             findViewById(R.id.connectStatusTextView);
                             connectStatusText.setText("Connected");
-                        }else
-                            Toast.makeText(getApplicationContext(),"Error Connecting to the Server",Toast.LENGTH_SHORT).show();
+                            connectButton.setText("Disconnect");
+                        } else
+                            Toast.makeText(getApplicationContext(), "Error Connecting to the Server", Toast.LENGTH_SHORT).show();
                     }
                 });
+            }
             }
         });
 
@@ -165,6 +174,18 @@ public class MainActivity extends AppCompatActivity {
         if(ftpConnect ==true){
             Toast.makeText(getApplicationContext(), "Connection Established ", Toast.LENGTH_SHORT).show();
         }*/
+
+    }
+
+    public void disconnect(){
+            connectButton.setText("Disconnect");
+            boolean disconnectStatus = myFTPClientFunctions.ftpDisconnect();
+            if(disconnectStatus){
+                connectButton.setText("Connect");
+                connectStatusText.setText("Not Connected");
+                Log.e("Disconnected",String.valueOf(disconnectStatus));
+                return;
+            }
     }
 
     public boolean ftpMakeDefaultFolder(String defLocation){
