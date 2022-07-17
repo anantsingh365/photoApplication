@@ -85,11 +85,14 @@ public class MainActivity extends AppCompatActivity {
         connectStatusText = findViewById(R.id.connectStatusTextView);
     }
 
-    public void setLocationButtonPressed(View view){
+    public void setLocationButton(View view){
 
         Log.e("SetLocationButton", " pressed");
         Intent intent = new Intent(this, Recyclerview.class);
         startActivity(intent);
+
+    }
+    public void transferButton(View view){
 
     }
 
@@ -99,31 +102,25 @@ public class MainActivity extends AppCompatActivity {
         Handler handler = new Handler(Looper.getMainLooper());
 
         executor.execute(() -> {
-
+            //Background Thread
             if (myFTPClientFunctions.isStatus()&&myFTPClientFunctions.isConnected()){
                disconnect();
             }else{
-            //Background work here
-            ftpConnect = myFTPClientFunctions.ftpConnect(ftphostName.getText().toString()
-                                                        , ftpUsername.getText().toString()
-                                                        , ftpPassword.getText().toString()
-                                                        ,Integer.parseInt(ftpPortNumber.getText().toString()));
+            ftpConnect = myFTPClientFunctions.ftpConnect(ftphostName.getText().toString(), ftpUsername.getText().toString()
+                                                            , ftpPassword.getText().toString()
+                                                            ,Integer.parseInt(ftpPortNumber.getText().toString()));
 
-            //connect and Create default folder in /Downloads
-            connectionSetup();
+            connectionSetup(); //connect and Create default folder in /Downloads
 
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    //UI Thread work here
-                    updateConnectStatus();
-                }
+            handler.post(() -> {
+                //UI Thread work here
+                updateConnectStatus();
             });
         }
         });
     }
 
-    public void connectionSetup(){
+    private void connectionSetup(){
         if (ftpConnect) {
             String workingDirectory = myFTPClientFunctions.ftpGetCurrentWorkingDirectory();
             // String[] directoryListing = myFTPClientFunctions.ftpPrintFilesList(workingDirectory);
@@ -135,25 +132,26 @@ public class MainActivity extends AppCompatActivity {
             }
             myFTPClientFunctions.ftpPrintFilesList(myFTPClientFunctions.ftpGetCurrentWorkingDirectory());
 
-            if (ftpMakeDefaultFolder("FtpApplicationFolder"))
-                Log.e("Default Folder Created: ", "True");
-
-            else
-                Log.e("Default Folder Created: ", "False");
+            if (ftpMakeDefaultFolder("FtpApplicationFolder"))   Log.e("Default Folder Created: ", "True");
+            else    Log.e("Default Folder Created: ", "False");
+            return;
         }
+        Log.e("Connection Setup Failed","connectionSetup Method in MainActivity.java");
     }
 
-    public void updateConnectStatus(){
+    private void updateConnectStatus(){
         if (ftpConnect) {
             Toast.makeText(getApplicationContext(), "Connection Established ", Toast.LENGTH_SHORT).show();
             findViewById(R.id.connectStatusTextView);
             connectStatusText.setText("Connected");
             connectButton.setText("Disconnect");
-        } else
+        } else{
             Toast.makeText(getApplicationContext(), "Error Connecting to the Server", Toast.LENGTH_SHORT).show();
+            Log.e("Error Connecting to the Server","updateConnectStatus Method in MainAcitivity.java");
+        }
     }
 
-    public void disconnect(){
+    private void disconnect(){
         if(myFTPClientFunctions.ftpDisconnect()){
             connectButton.setText("Connect");
             connectStatusText.setText("Not Connected");
@@ -163,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public boolean ftpMakeDefaultFolder(String defLocation){
+    private boolean ftpMakeDefaultFolder(String defLocation){
         String[] directoryListing = myFTPClientFunctions.ftpPrintFilesList(defLocation);
         for(String directory: directoryListing){
             if(directory.equals("FtpApplicationFolder")){
@@ -173,9 +171,6 @@ public class MainActivity extends AppCompatActivity {
         return myFTPClientFunctions.ftpMakeDirectory("FtpApplicationFolder");
     }
 
-    public void transferButton(View view){
-
-    }
 
     @Override
     protected void onResume(){
