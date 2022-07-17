@@ -1,7 +1,5 @@
 package com.example.ftpapplication;
 
-import static android.content.ContentValues.TAG;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
@@ -17,7 +15,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -104,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         executor.execute(() -> {
             //Background Thread
             if (myFTPClientFunctions.isStatus()&&myFTPClientFunctions.isConnected()){
-               disconnect();
+               ftpDisconnect();
             }else{
             ftpConnect = myFTPClientFunctions.ftpConnect(ftphostName.getText().toString(), ftpUsername.getText().toString()
                                                             , ftpPassword.getText().toString()
@@ -151,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void disconnect(){
+    private void ftpDisconnect(){
         if(myFTPClientFunctions.ftpDisconnect()){
             connectButton.setText("Connect");
             connectStatusText.setText("Not Connected");

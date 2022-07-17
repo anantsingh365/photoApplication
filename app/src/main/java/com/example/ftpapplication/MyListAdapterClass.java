@@ -2,25 +2,20 @@ package com.example.ftpapplication;
 
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 
 class MyListAdapter extends androidx.recyclerview.widget.RecyclerView.Adapter<MyListAdapter.ViewHolder>{
@@ -52,16 +47,17 @@ class MyListAdapter extends androidx.recyclerview.widget.RecyclerView.Adapter<My
     @Override
     public void onBindViewHolder(ViewHolder holder, @SuppressLint("Recyclerview") int position) {
         final MyListData myListData = listdata.get(position);
-        holder.textView.setText( listdata.get(position).getDescription().substring(trimString.length()+1));
-        holder.imageView.setImageResource( listdata.get(position).getImgId());
-        holder.flipSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+        holder.textView.setText(listdata.get(position).getDescription().substring(trimString.length() + 1));
+        holder.imageView.setImageResource(listdata.get(position).getImgId());
+        holder.flipSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.e("Switch Checked",String.valueOf(isChecked));
-                if(isChecked){
+                Log.e("Switch Checked", String.valueOf(isChecked));
+                if (isChecked) {
                     String currentPath = listdata.get(position).getDescription();
-                    Log.e("currentPath_Flip_Button",currentPath);
+                    Log.e("currentPath_Flip_Button", currentPath);
                     MainActivity.setsrcFolder(currentPath);
+                    setTransferList(position);
                 }
             }
         });
@@ -75,14 +71,27 @@ class MyListAdapter extends androidx.recyclerview.widget.RecyclerView.Adapter<My
                 Recyclerview.scrollExtent();*/
                 String currentPath = listdata.get(position).getDescription();
                 isFile = new File(currentPath);
-                if(!isFile.isFile()){
+                if (!isFile.isFile()) {
                     trimString = currentPath;
-                    listdata =  Recyclerview.myListDataGenerator(currentPath,0);
-                    Log.e("listdateInstance",String.valueOf(listdata.hashCode()));
+                    listdata = Recyclerview.myListDataGenerator(currentPath, 0);
+                    Log.e("listdateInstance", String.valueOf(listdata.hashCode()));
                     notifyDataSetChanged();
                 }
             }
         });
+    }
+    public void setTransferList(int position){
+        ArrayList<String> transferList = new ArrayList<>();
+        String srcPath = listdata.get(position).getDescription();
+        File myDirectory = new File(srcPath);
+        File[] directories = myDirectory.listFiles();
+        if(directories != null) {
+            for (File str : directories) {
+                if(str.isFile()) transferList.add(String.valueOf(str));
+            }
+            TransferList.setTransferList(transferList);
+            Log.e("TransferList Set","setTransferList Method MyListAdapterClass.java");
+        }
     }
 
     public void onBackUpdate(String trimString){
