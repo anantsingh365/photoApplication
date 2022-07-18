@@ -80,6 +80,7 @@ class MyListAdapter extends androidx.recyclerview.widget.RecyclerView.Adapter<My
             }
         });
     }
+
     public void setTransferList(int position){
         ArrayList<String> transferList = new ArrayList<>();
         String srcPath = listdata.get(position).getDescription();

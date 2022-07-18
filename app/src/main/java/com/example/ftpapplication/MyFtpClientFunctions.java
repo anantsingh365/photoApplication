@@ -236,9 +236,9 @@ class MyFTPClientFunctions {
             FileInputStream srcFileStream = new FileInputStream(srcFilePath);
 
             // change working directory to the destination directory
-            // if (ftpChangeDirectory(desDirectory)) {
+             if (ftpChangeDirectory(desDirectory)) {
             status = mFTPClient.storeFile(desFileName, srcFileStream);
-            // }
+             }
 
             srcFileStream.close();
 

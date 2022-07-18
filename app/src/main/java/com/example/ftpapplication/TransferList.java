@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class TransferList {
     private static ArrayList<String> transferList;
 
-    public static ArrayList<String> getFileList() {
+    public static ArrayList<String> getTransferList() {
         return transferList;
     }
     public static void setTransferList(ArrayList<String> transferList) {

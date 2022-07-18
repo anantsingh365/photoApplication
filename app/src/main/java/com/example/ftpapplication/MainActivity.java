@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -89,8 +90,47 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
 
     }
-    public void transferButton(View view){
 
+    public void transferButton(View view){
+        if(myFTPClientFunctions.isStatus() && myFTPClientFunctions.isConnected()){
+            ArrayList<String> transferList = TransferList.getTransferList();
+            if(transferList!=null && transferList.size() !=0){
+
+                ExecutorService executorService = Executors.newSingleThreadExecutor();
+                Handler handler = new Handler(Looper.getMainLooper());
+                executorService.execute(() -> {
+                    //Background Thread
+                    Log.e("#################  TRANSFER FILE PLACEHOLDER   #############","");
+
+                    String srcFile;
+                    String desName;
+                    boolean progress;
+
+                    for(String file: transferList){
+                        Log.i("Transferring ", file);
+                        srcFile = file;
+                        desName = file.substring(srcFile.lastIndexOf("/")+1);
+                        progress = myFTPClientFunctions.ftpUpload(file, desName, "C:\\Users\\sanan\\Downloads",getApplicationContext());
+                        if(progress){
+                            Log.i("Transfer Of File: "+srcFile,"Complete");
+                        }
+                    }
+                    Log.e("#################  FILE TRANSFER COMPLETE   ################","");
+
+                        handler.post(() -> {
+                            //UI Thread work here
+                          //  String Path = srcFile.substring(0,srcFile.lastIndexOf("/"));
+                            Toast.makeText(this, "Transfer Complete From Selected Folder ", Toast.LENGTH_SHORT).show();
+                        });
+
+                });
+
+            }else{
+                Log.e("There are no files in the Directory","");
+            }
+        }else{
+            Toast.makeText(this, "Connect To Ftp First", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void connectButton(View view) {
@@ -100,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
 
         executor.execute(() -> {
             //Background Thread
-            if (myFTPClientFunctions.isStatus()&&myFTPClientFunctions.isConnected()){
+            if (myFTPClientFunctions.isStatus() && myFTPClientFunctions.isConnected()){
                ftpDisconnect();
             }else{
             ftpConnect = myFTPClientFunctions.ftpConnect(ftphostName.getText().toString(), ftpUsername.getText().toString()
