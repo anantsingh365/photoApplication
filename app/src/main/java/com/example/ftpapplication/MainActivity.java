@@ -105,12 +105,12 @@ public class MainActivity extends AppCompatActivity {
                     String srcFile;
                     String desName;
                     boolean progress;
-
+                    boolean FtpDirectory = myFTPClientFunctions.ftpChangeDirectory("FtpApplicationFolder");
                     for(String file: transferList){
                         Log.i("Transferring ", file);
                         srcFile = file;
                         desName = file.substring(srcFile.lastIndexOf("/")+1);
-                        progress = myFTPClientFunctions.ftpUpload(file, desName, "C:\\Users\\sanan\\Downloads",getApplicationContext());
+                        progress = myFTPClientFunctions.ftpUpload(file, desName, "FtpApplicationFolder",getApplicationContext());
                         if(progress){
                             Log.i("Transfer Of File: "+srcFile,"Complete");
                         }
