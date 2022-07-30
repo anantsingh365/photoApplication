@@ -73,7 +73,7 @@ class MyListAdapter extends androidx.recyclerview.widget.RecyclerView.Adapter<My
                 isFile = new File(currentPath);
                 if (!isFile.isFile()) {
                     trimString = currentPath;
-                    listdata = Recyclerview.myListDataGenerator(currentPath, 0);
+                    listdata = Recyclerview.forwardListingGenerator(currentPath);
                     Log.e("listdateInstance", String.valueOf(listdata.hashCode()));
                     notifyDataSetChanged();
                 }
@@ -81,19 +81,25 @@ class MyListAdapter extends androidx.recyclerview.widget.RecyclerView.Adapter<My
         });
     }
 
-    public void setTransferList(int position){
+    public void setTransferList(int position) {
         ArrayList<String> transferList = new ArrayList<>();
         String srcPath = listdata.get(position).getDescription();
         File myDirectory = new File(srcPath);
         File[] directories = myDirectory.listFiles();
-        if(directories != null) {
+        if (directories != null) {
             for (File str : directories) {
-                if(str.isFile()) transferList.add(String.valueOf(str));
+                if (str.isFile() && str.getName().endsWith(".jpg")) {
+                    transferList.add(String.valueOf(str));
+                }
             }
-            TransferList.setTransferList(transferList);
-            Log.e("TransferList Set","setTransferList Method MyListAdapterClass.java");
+            for(String transferListLog : transferList) {
+                Log.i("transferList", transferListLog);
+            }
+                TransferList.setTransferList(transferList);
+                Log.e("TransferList Set", "setTransferList Method MyListAdapterClass.java");
+            }
         }
-    }
+
 
     public void onBackUpdate(String trimString){
         this.trimString = trimString;

@@ -2,6 +2,8 @@ package com.example.ftpapplication;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -14,8 +16,23 @@ import android.util.Log;
 class MyFTPClientFunctions {
 
     // Now, declare a public FTP client object.
+    private static MyFTPClientFunctions myFTPClientFunctions;
+
+
+    private MyFTPClientFunctions(){
+
+    }
+
+    public static MyFTPClientFunctions getMyFTPClientFunctions(){
+        if(myFTPClientFunctions == null){
+            return new MyFTPClientFunctions();
+        }
+        return myFTPClientFunctions;
+    }
+
+
     private static final String TAG = "MyFTPClientFunctions";
-    public FTPClient mFTPClient = null;
+    private FTPClient mFTPClient = null;
 
     private boolean status = false;
     private boolean isConnected = false;
@@ -25,17 +42,17 @@ class MyFTPClientFunctions {
         return status;
     }
 
-    public void setStatus(boolean status) {
+   /* public void setStatus(boolean status) {
         this.status = status;
-    }
+    }*/
 
     public boolean isConnected() {
         return isConnected;
     }
 
-    public void setConnected(boolean connected) {
+   /* public void setConnected(boolean connected) {
         isConnected = connected;
-    }
+    }*/
 
 
     // Method to connect to FTP server:
@@ -112,7 +129,7 @@ class MyFTPClientFunctions {
            return mFTPClient.changeWorkingDirectory(directory_path);
         } catch (Exception e) {
             Log.d(TAG, "Error: could not change directory to " + directory_path);
-            Log.e("Couldn't not create folder",e.toString());
+            Log.e("Could not create folder",e.toString());
         }
 
         return false;
@@ -120,21 +137,46 @@ class MyFTPClientFunctions {
 
     // Method to list all files in a directory:
 
-    public String[] ftpPrintFilesList(String dir_path) {
-        String[] fileList = null;
+    public List<String> ftpPrintFilesList(String dir_path) {
+        List<String> fileList = null;
         try {
             FTPFile[] ftpFiles = mFTPClient.listFiles(dir_path);
             int length = ftpFiles.length;
-            fileList = new String[length];
+            fileList = new ArrayList<>();
             for (int i = 0; i < length; i++) {
                 String name = ftpFiles[i].getName();
                 boolean isFile = ftpFiles[i].isFile();
 
                 if (isFile) {
-                    fileList[i] = "File :: " + name;
+                    fileList.add("File :: " + name);
                     Log.i(TAG, "File : " + name);
                 } else {
-                    fileList[i] = "Directory :: " + name;
+                    fileList.add("Directory :: " + name);
+                    Log.i(TAG, "Directory : " + name);
+                }
+            }
+            return fileList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return fileList;
+        }
+    }
+
+    public List<String> getFileList(String dir_path){
+        List<String> fileList = null;
+        try {
+            FTPFile[] ftpFiles = mFTPClient.listFiles(dir_path);
+            int length = ftpFiles.length;
+            fileList = new ArrayList<>();
+            for (int i = 0; i < length; i++) {
+                String name = ftpFiles[i].getName();
+                boolean isFile = ftpFiles[i].isFile();
+
+                if (isFile) {
+                    fileList.add(name.trim());
+                    Log.i(TAG, "File : " + name);
+                } else {
+                    fileList.add(name.trim());
                     Log.i(TAG, "Directory : " + name);
                 }
             }

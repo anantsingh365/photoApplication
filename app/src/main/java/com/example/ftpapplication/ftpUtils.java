@@ -7,7 +7,7 @@ public class ftpUtils implements Runnable {
     private  int    PORT;
     private  boolean ftpConnectSuccess;
 
-    private MyFTPClientFunctions myFTPClientFunctions = new MyFTPClientFunctions();
+    private MyFTPClientFunctions myFTPClientFunctions = MyFTPClientFunctions.getMyFTPClientFunctions();
 
     public ftpUtils(String hostname, String username, String password, int port){
         HOST_NAME = hostname;

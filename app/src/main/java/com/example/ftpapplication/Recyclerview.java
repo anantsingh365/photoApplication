@@ -19,7 +19,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 
-public  class Recyclerview extends AppCompatActivity {
+public class Recyclerview extends AppCompatActivity {
 
 
     private static ArrayList<MyListData> myListData;
@@ -41,24 +41,24 @@ public  class Recyclerview extends AppCompatActivity {
 
         myListData = new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerView);
-        adapter = new MyListAdapter( myListDataGenerator("/storage/emulated/0", 0),"/storage/emulated/0");
+        adapter = new MyListAdapter( forwardListingGenerator("/storage/emulated/0"),"/storage/emulated/0");
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
     }
 
+    public static ArrayList<MyListData> forwardListingGenerator(String pathString){
+        pathStringBuffer = pathString;
+        return myListDataGenerator(pathString);
+    }
+    public static ArrayList<MyListData> backListingGenerator(String pathString){
+        return myListDataGenerator(pathString);
+    }
 
-    public static ArrayList<MyListData> myListDataGenerator(String pathString, int isBack){
+    private static ArrayList<MyListData> myListDataGenerator(String pathString){
 
-        if (isBack == 0){
-            pathStringBuffer = pathString;
-        }
-          //pathStringRecycler.add(pathString);
         File myDirectory = new File(pathString);   // pathStringRecycler.get(pathStringRecycler.size()-1)
         File[] directories = myDirectory.listFiles();
-//        for(File list:directories){
-//            Log.e("fileList", String.valueOf(list));
-//        }
         myListData.clear();
 
             if(directories != null) {
@@ -68,18 +68,13 @@ public  class Recyclerview extends AppCompatActivity {
 
                     else myListData.add(new MyListData(String.valueOf(str), R.drawable.file_icon));
                 }
-                Log.e("myListDataHashcode", String.valueOf(myListData.hashCode()));
-                // myListUpdateIndex = myListData.size();
             }
             return myListData;
-
     }
 
     public static void scrollExtent(){
-
         int scroll = recyclerView.computeVerticalScrollOffset();
         Log.i("ScrollExtent ", String.valueOf(scroll));
-    //    recyclerView.setScrollY();
     }
 
 
@@ -95,7 +90,7 @@ public  class Recyclerview extends AppCompatActivity {
         else {
             float scroll;
             pathStringBuffer = string;
-            myListData = myListDataGenerator(string,1);
+            myListData = backListingGenerator(string);
             adapter.onBackUpdate(string);
             adapter.notifyDataSetChanged();
            // scroll = recyclerView.getScaleY();
