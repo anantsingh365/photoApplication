@@ -1,4 +1,4 @@
-package com.example.ftpapplication;
+package com.example.ftpapplication.ftp;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -13,7 +13,7 @@ import org.apache.commons.net.ftp.FTPReply;
 import android.content.Context;
 import android.util.Log;
 
-class MyFTPClientFunctions {
+public class MyFTPClientFunctions {
 
     // Now, declare a public FTP client object.
     private static MyFTPClientFunctions myFTPClientFunctions;

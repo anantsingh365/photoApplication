@@ -17,10 +17,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FtpApplication">
         <activity
-            android:name=".Recyclerview"
+            android:name=".Activities.LocalFileListing"
             android:exported="true" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,4 +1,4 @@
-package com.example.ftpapplication;
+package com.example.ftpapplication.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,11 +15,15 @@ import android.util.Log;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.ftpapplication.MyListAdapter;
+import com.example.ftpapplication.MyListData;
+import com.example.ftpapplication.R;
+
 import java.io.File;
 import java.util.ArrayList;
 
 
-public class Recyclerview extends AppCompatActivity {
+public class LocalFileListing extends AppCompatActivity {
 
 
     private static ArrayList<MyListData> myListData;
@@ -29,8 +33,8 @@ public class Recyclerview extends AppCompatActivity {
     private static androidx.recyclerview.widget.RecyclerView recyclerView;
 
     private static  ArrayList<Parcelable> scrollPositions = new ArrayList<>();
-   public static  Bundle savedInstance;
-   //private static int myListUpdateIndex = 0;
+    public static  Bundle savedInstance;
+    //private static int myListUpdateIndex = 0;
     private static Bundle state;
 
 
@@ -61,15 +65,15 @@ public class Recyclerview extends AppCompatActivity {
         File[] directories = myDirectory.listFiles();
         myListData.clear();
 
-            if(directories != null) {
-                for (File str : directories) {
-                    if (str.isDirectory())
-                        myListData.add(new MyListData(String.valueOf(str), R.drawable.folder_icon));
+        if(directories != null) {
+            for (File str : directories) {
+                if (str.isDirectory())
+                    myListData.add(new MyListData(String.valueOf(str), R.drawable.folder_icon));
 
-                    else myListData.add(new MyListData(String.valueOf(str), R.drawable.file_icon));
-                }
+                else myListData.add(new MyListData(String.valueOf(str), R.drawable.file_icon));
             }
-            return myListData;
+        }
+        return myListData;
     }
 
     public static void scrollExtent(){
@@ -93,8 +97,8 @@ public class Recyclerview extends AppCompatActivity {
             myListData = backListingGenerator(string);
             adapter.onBackUpdate(string);
             adapter.notifyDataSetChanged();
-           // scroll = recyclerView.getScaleY();
-           // recyclerView.scrollToPosition((int) scroll);
+            // scroll = recyclerView.getScaleY();
+            // recyclerView.scrollToPosition((int) scroll);
             //adapter.notifyDataSetChanged();
         }
     }

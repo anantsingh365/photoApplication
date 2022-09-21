@@ -1,4 +1,6 @@
-package com.example.ftpapplication;
+package com.example.ftpapplication.ftp;
+
+import com.example.ftpapplication.ftp.MyFTPClientFunctions;
 
 public class ftpUtils implements Runnable {
     private  String HOST_NAME;

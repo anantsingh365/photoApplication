@@ -1,4 +1,4 @@
-package com.example.ftpapplication;
+package com.example.ftpapplication.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,7 +15,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.sql.Array;
+import com.example.ftpapplication.R;
+import com.example.ftpapplication.TransferList;
+import com.example.ftpapplication.ftp.MyFTPClientFunctions;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -39,33 +42,6 @@ public class MainActivity extends AppCompatActivity {
         srcFolder.add(src_Folder);
         setLocationText.setText(src_Folder);
     }
-
-
- /* private  Handler handler = new Handler(getMainLooper()) {
-
-        public void handleMessage(android.os.Message msg) {
-
-            if (pd != null && pd.isShowing()) {
-                pd.dismiss();
-            }
-            if (msg.what == 0) {
-                getFTPFileList();
-            } else if (msg.what == 1) {
-                showCustomDialog(fileList);
-            } else if (msg.what == 2) {
-                Toast.makeText(MainActivity.this, "Uploaded Successfully!",
-                        Toast.LENGTH_LONG).show();
-            } else if (msg.what == 3) {
-                Toast.makeText(MainActivity.this, "Disconnected Successfully!",
-                        Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(MainActivity.this, "Unable to Perform Action!",
-                        Toast.LENGTH_LONG).show();
-            }
-
-        }
-
-    };*/
 
 
     @Override
@@ -125,11 +101,10 @@ public class MainActivity extends AppCompatActivity {
         return(myFTPClientFunctions.isStatus() && myFTPClientFunctions.isConnected());
     }
 
-
     public void setLocationButton(View view){
 
         Log.e("SetLocationButton", " pressed");
-        Intent intent = new Intent(this, Recyclerview.class);
+        Intent intent = new Intent(this, LocalFileListing.class);
         startActivity(intent);
 
     }
@@ -152,31 +127,32 @@ public class MainActivity extends AppCompatActivity {
 
                     String workingDirectory = myFTPClientFunctions.ftpGetCurrentWorkingDirectory();
                     List<String> desExistFiles = myFTPClientFunctions.getFileList(workingDirectory);
-                    for(String temp: desExistFiles){
-                        Log.i("target Directory files","temp");
-                    }
+//                    for(String temp: desExistFiles){
+//                        Log.i("target Directory files","temp");
+//                    }
+                    desExistFiles.forEach((desFile) ->  Log.i("target Directory files",desFile));
 
-                    for(String file: transferList){
+                    for(String file: transferList) {
                         Log.i("Transferring.............. ", file);
                         srcFile = file;
-                        desName = file.substring(srcFile.lastIndexOf("/")+1);
+                        desName = file.substring(srcFile.lastIndexOf("/") + 1);
 
-                        if(desExistFiles.contains(desName)){
-                            Log.i("File already Exist in directory, Skipped",file);
-                        }else{
-                            progress = myFTPClientFunctions.ftpUpload(file, desName, "FtpApplicationFolder",getApplicationContext());
-                            if(progress){
-                                Log.i("Transfer Of File: "+srcFile,"COMPLETE");
-                            }else Log.i("Transfer of File:", "Failed");
+                        if (desExistFiles.contains(desName)) {
+                            Log.i("File already Exist in directory, Skipped", file);
+                        } else {
+                            progress = myFTPClientFunctions.ftpUpload(file, desName, "FtpApplicationFolder", getApplicationContext());
+                            if (progress) {
+                                Log.i("Transfer Of File: " + srcFile, "COMPLETE");
+                            } else Log.i("Transfer of File:", "Failed");
                         }
                     }
                     Log.e("#################  FILE TRANSFER COMPLETE   ################","");
 
-                        handler.post(() -> {
-                            //UI Thread work here
-                          //  String Path = srcFile.substring(0,srcFile.lastIndexOf("/"));
-                            Toast.makeText(this, "Transfer Complete From Selected Folder ", Toast.LENGTH_SHORT).show();
-                        });
+                    handler.post(() -> {
+                        //UI Thread work here
+                        //  String Path = srcFile.substring(0,srcFile.lastIndexOf("/"));
+                        Toast.makeText(this, "Transfer Complete From Selected Folder ", Toast.LENGTH_SHORT).show();
+                    });
                 });
             }else{
                 Log.e("There are No files in the Directory","");
@@ -195,19 +171,19 @@ public class MainActivity extends AppCompatActivity {
         executor.execute(() -> {
             //Background Thread
             if (isFTPConnected()){
-               ftpDisconnect();
+                ftpDisconnect();
             }else{
-            ftpConnect = myFTPClientFunctions.ftpConnect(ftphostName.getText().toString(), ftpUsername.getText().toString()
-                                                            , ftpPassword.getText().toString()
-                                                            ,Integer.parseInt(ftpPortNumber.getText().toString()));
+                ftpConnect = myFTPClientFunctions.ftpConnect(ftphostName.getText().toString(), ftpUsername.getText().toString()
+                        , ftpPassword.getText().toString()
+                        ,Integer.parseInt(ftpPortNumber.getText().toString()));
 
-            connectionSetup(); //connect and Create default folder in /Downloads
+                connectionSetup(); //connect and Create default folder in /Downloads
 
-            handler.post(() -> {
-                //UI Thread work here
-                updateConnectStatusUI();
-            });
-        }
+                handler.post(() -> {
+                    //UI Thread work here
+                    updateConnectStatusUI();
+                });
+            }
         });
     }
 
@@ -217,21 +193,22 @@ public class MainActivity extends AppCompatActivity {
             // String[] directoryListing = myFTPClientFunctions.ftpPrintFilesList(workingDirectory);
             Log.e("Working Directory", workingDirectory);
 
-            if (myFTPClientFunctions.ftpChangeDirectory(workingDirectory + "Downloads")) {
+            if (myFTPClientFunctions.ftpChangeDirectory(workingDirectory + "Downloads")){
                 Log.e("PWD Changed!!", "True");
                 Log.e("Now working Directory is - ", myFTPClientFunctions.ftpGetCurrentWorkingDirectory());
             }
+
             myFTPClientFunctions.ftpPrintFilesList(myFTPClientFunctions.ftpGetCurrentWorkingDirectory());
 
-            if (ftpMakeDefaultFolder("FtpApplicationFolder")){
+            if(ftpMakeDefaultFolder("FtpApplicationFolder")){
                 Log.e("Default Folder Created: ", "True");
-            }
-            else  {
+            }else {
                 Log.e("Default Folder Created: ", "False");
             }
-            return;
+        }else{
+            Log.e("Connection Setup Failed","connectionSetup Method in MainActivity.java");
         }
-        Log.e("Connection Setup Failed","connectionSetup Method in MainActivity.java");
+
     }
 
     private void updateConnectStatusUI(){
@@ -240,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.connectStatusTextView);
             connectStatusText.setText("Connected");
             connectButton.setText("Disconnect");
-        } else{
+        }else{
             Toast.makeText(getApplicationContext(), "Error Connecting to the Server", Toast.LENGTH_SHORT).show();
             Log.e("Error Connecting to the Server","updateConnectStatus Method in MainAcitivity.java");
         }
