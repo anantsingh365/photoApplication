@@ -85,9 +85,9 @@ public class Recyclerview extends AppCompatActivity {
         string = pathStringBuffer.substring(0,pathStringBuffer.lastIndexOf("/"));
         Log.e("OnBackPressed String before cut ",pathStringBuffer);
 
-        if(string.length()<rootDirectoryLength)  super.onBackPressed();
-
-        else {
+        if(string.length()<rootDirectoryLength){
+            super.onBackPressed();
+        }else {
             float scroll;
             pathStringBuffer = string;
             myListData = backListingGenerator(string);

@@ -98,7 +98,7 @@ class MyListAdapter extends androidx.recyclerview.widget.RecyclerView.Adapter<My
                 TransferList.setTransferList(transferList);
                 Log.e("TransferList Set", "setTransferList Method MyListAdapterClass.java");
             }
-        }
+    }
 
 
     public void onBackUpdate(String trimString){

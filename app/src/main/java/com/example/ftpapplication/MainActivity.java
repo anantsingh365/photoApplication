@@ -223,8 +223,12 @@ public class MainActivity extends AppCompatActivity {
             }
             myFTPClientFunctions.ftpPrintFilesList(myFTPClientFunctions.ftpGetCurrentWorkingDirectory());
 
-            if (ftpMakeDefaultFolder("FtpApplicationFolder"))   Log.e("Default Folder Created: ", "True");
-            else    Log.e("Default Folder Created: ", "False");
+            if (ftpMakeDefaultFolder("FtpApplicationFolder")){
+                Log.e("Default Folder Created: ", "True");
+            }
+            else  {
+                Log.e("Default Folder Created: ", "False");
+            }
             return;
         }
         Log.e("Connection Setup Failed","connectionSetup Method in MainActivity.java");
@@ -261,40 +265,4 @@ public class MainActivity extends AppCompatActivity {
         }
         return myFTPClientFunctions.ftpMakeDirectory("FtpApplicationFolder");
     }
-
-
-
-
-   /* private void connectToFTPAddress() {
-
-        final String host = ftphostName.getText().toString().trim();
-        final String username = ftpUsername.getText().toString().trim();
-        final String password = ftpPassword.getText().toString().trim();
-
-        if (host.length() < 1) {
-            Toast.makeText(MainActivity.this, "Please Enter Host Address!",
-                    Toast.LENGTH_LONG).show();
-        } else if (username.length() < 1) {
-            Toast.makeText(MainActivity.this, "Please Enter User Name!",
-                    Toast.LENGTH_LONG).show();
-        } else if (password.length() < 1) {
-            Toast.makeText(MainActivity.this, "Please Enter Password!",
-                    Toast.LENGTH_LONG).show();
-        } else {
-
-            new Thread(new Runnable() {
-                public void run() {
-                    boolean status = false;
-                    status = ftpclient.ftpConnect(host, username, password, 21);
-                    if (status == true) {
-                        Log.d(TAG, "Connection Success");
-                        handler.sendEmptyMessage(0);
-                    } else {
-                        Log.d(TAG, "Connection failed");
-                        handler.sendEmptyMessage(-1);
-                    }
-                }
-            }).start();
-        }
-    }*/
 }
