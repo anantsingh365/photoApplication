@@ -1,6 +1,4 @@
-package com.example.ftpapplication;
-
-import java.io.File;
+package com.example.ftpapplication.utils;
 
 public class MyListData {
 

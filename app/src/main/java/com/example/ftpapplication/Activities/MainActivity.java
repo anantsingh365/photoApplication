@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ftpapplication.R;
-import com.example.ftpapplication.TransferList;
+import com.example.ftpapplication.utils.TransferList;
 import com.example.ftpapplication.ftp.MyFTPClientFunctions;
 
 import java.util.ArrayList;
@@ -127,9 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
                     String workingDirectory = myFTPClientFunctions.ftpGetCurrentWorkingDirectory();
                     List<String> desExistFiles = myFTPClientFunctions.getFileList(workingDirectory);
-//                    for(String temp: desExistFiles){
-//                        Log.i("target Directory files","temp");
-//                    }
+
                     desExistFiles.forEach((desFile) ->  Log.i("target Directory files",desFile));
 
                     for(String file: transferList) {
@@ -214,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
     private void updateConnectStatusUI(){
         if (ftpConnect) {
             Toast.makeText(getApplicationContext(), "Connection Established ", Toast.LENGTH_SHORT).show();
-            findViewById(R.id.connectStatusTextView);
+          // findViewById(R.id.connectStatusTextView);
             connectStatusText.setText("Connected");
             connectButton.setText("Disconnect");
         }else{

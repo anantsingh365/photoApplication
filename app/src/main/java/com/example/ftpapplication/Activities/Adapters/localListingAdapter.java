@@ -1,4 +1,4 @@
-package com.example.ftpapplication;
+package com.example.ftpapplication.Activities.Adapters;
 
 
 import android.annotation.SuppressLint;
@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
@@ -16,24 +15,22 @@ import androidx.annotation.NonNull;
 
 import com.example.ftpapplication.Activities.LocalFileListing;
 import com.example.ftpapplication.Activities.MainActivity;
+import com.example.ftpapplication.utils.MyListData;
+import com.example.ftpapplication.R;
+import com.example.ftpapplication.utils.TransferList;
 
 import java.io.File;
 import java.util.ArrayList;
 
 
-public class MyListAdapter extends androidx.recyclerview.widget.RecyclerView.Adapter<MyListAdapter.ViewHolder>{
+public class localListingAdapter extends androidx.recyclerview.widget.RecyclerView.Adapter<localListingAdapter.ViewHolder>{
 
     private  String trimString;
     private  ArrayList<MyListData> listData;
-    private LocalFileListing localFileListing = new LocalFileListing();
-    private ArrayList<Integer> scrollPosition;
-    private File isFile;
+   // private File isFile;
 
 
-
-
-    // Constructor LocalFileListing LocalFileListing;
-    public MyListAdapter(ArrayList<MyListData> listData, String trimString) {
+    public localListingAdapter(ArrayList<MyListData> listData, String trimString) {
         this.listData = listData;
         this.trimString = trimString;
     }
@@ -66,11 +63,10 @@ public class MyListAdapter extends androidx.recyclerview.widget.RecyclerView.Ada
         });
         holder.relativeLayout.setOnClickListener(view -> {
             String currentPath = listData.get(position).getDescription();
-            isFile = new File(currentPath);
-            if (!isFile.isFile()) {
+            File file = new File(currentPath);
+            if (!file.isFile()) {
                 trimString = currentPath;
                 listData = LocalFileListing.forwardListingGenerator(currentPath);
-                Log.e("listdateInstance", String.valueOf(listData.hashCode()));
                 notifyDataSetChanged();
             }
         });

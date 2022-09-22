@@ -1,9 +1,8 @@
-package com.example.ftpapplication;
+package com.example.ftpapplication.utils;
 
 import android.util.Log;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class TransferList {
