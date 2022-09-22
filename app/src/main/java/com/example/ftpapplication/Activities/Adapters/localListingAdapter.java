@@ -40,13 +40,12 @@ public class localListingAdapter extends androidx.recyclerview.widget.RecyclerVi
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View listItem= layoutInflater.inflate(R.layout.list_item, parent, false);
-        ViewHolder viewHolder = new ViewHolder(listItem);
-        return viewHolder;
+        return new ViewHolder(listItem);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        final MyListData myListData = listData.get(position);
+       // final MyListData myListData = listData.get(position);
         holder.textView.setText(listData.get(position).getDescription().substring(trimString.length() + 1));
         holder.imageView.setImageResource(listData.get(position).getImgId());
 

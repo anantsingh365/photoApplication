@@ -15,7 +15,6 @@ import android.util.Log;
 
 public class MyFTPClientFunctions {
 
-    // Now, declare a public FTP client object.
     private static MyFTPClientFunctions myFTPClientFunctions;
 
 

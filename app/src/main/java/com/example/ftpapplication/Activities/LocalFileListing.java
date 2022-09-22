@@ -74,7 +74,6 @@ public class LocalFileListing extends AppCompatActivity {
         if(string.length()<rootDirectoryLength){
             super.onBackPressed();
         }else {
-            float scroll;
             pathStringBuffer = string;
             myListData = backListingGenerator(string);
             adapter.onBackUpdate(string);
