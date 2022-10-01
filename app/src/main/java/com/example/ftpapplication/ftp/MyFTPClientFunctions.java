@@ -24,7 +24,8 @@ public class MyFTPClientFunctions {
 
     public static MyFTPClientFunctions getMyFTPClientFunctions(){
         if(myFTPClientFunctions == null){
-            return new MyFTPClientFunctions();
+            myFTPClientFunctions = new MyFTPClientFunctions();
+            return myFTPClientFunctions;
         }
         return myFTPClientFunctions;
     }
@@ -271,7 +272,7 @@ public class MyFTPClientFunctions {
      * be upload to
      */
     public boolean ftpUpload(String srcFilePath, String desFileName,
-                             String desDirectory, Context context) {
+                             String desDirectory) {
         boolean status = false;
         try {
             FileInputStream srcFileStream = new FileInputStream(srcFilePath);

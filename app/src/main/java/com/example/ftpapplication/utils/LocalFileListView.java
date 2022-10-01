@@ -1,11 +1,11 @@
 package com.example.ftpapplication.utils;
 
-public class MyListData {
+public class LocalFileListView {
 
 
         private String description;
         private int imgId;
-        public MyListData( String description, int imgId) {
+        public LocalFileListView(String description, int imgId) {
             this.description = description;
             this.imgId = imgId;
         }

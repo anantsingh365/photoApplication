@@ -15,7 +15,7 @@ public class TransferList {
         TransferList.transferList = transferList;
     }
     public static void generateTransferList(String srcPath){
-
+        transferList.clear();
         File myDirectory = new File(srcPath);
         File[] directories = myDirectory.listFiles();
         if (directories != null) {
