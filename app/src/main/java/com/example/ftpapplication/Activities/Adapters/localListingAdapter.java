@@ -60,7 +60,6 @@ public class localListingAdapter extends androidx.recyclerview.widget.RecyclerVi
                 if (isChecked) {
                     String currentPath = listData.get(position).getDescription();
                     Log.e("currentPath_Flip_Button", currentPath);
-                    MainActivity.setsrcFolder(currentPath);
                     String srcPath = listData.get(position).getDescription();
                     TransferList.generateTransferList(srcPath);
                     List<String> transferList = TransferList.getTransferList();

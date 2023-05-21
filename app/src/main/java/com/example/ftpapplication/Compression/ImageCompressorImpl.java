@@ -11,6 +11,7 @@ import com.example.ftpapplication.ftp.FTPTransfer;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 public class ImageCompressorImpl implements ImageCompressor{
 
@@ -73,9 +74,8 @@ public class ImageCompressorImpl implements ImageCompressor{
         transferStatus = true;
         transferList.forEach(this::moveToCacheFolder);
         File cacheFolder = new File(cacheFolderPath);
-        String[] cacheFolderShoudldBeEmpty = cacheFolder.list();
 
-        if(cacheFolderShoudldBeEmpty.length == 0){
+        if(Objects.requireNonNull(cacheFolder.list()).length == 0){
            System.out.println("Cache Folder has been emptied");
        }
         transferStatus = false;

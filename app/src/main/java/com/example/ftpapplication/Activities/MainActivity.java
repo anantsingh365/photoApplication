@@ -40,22 +40,10 @@ public class MainActivity extends AppCompatActivity {
     private EditText ftpPortNumber;
     private Button setLocationButton,connectButton;
     private static  TextView setLocationText;
-    private ProgressDialog pd;
     private boolean ftpConnect;
     private MyFTPClientFunctions myFTPClientFunctions;
     private TextView connectStatusText;
-    private String[] cacheFolder;
-    private File makeCacheFolder;
-    private Button transferButton;
     private String cacheFolderPath;
-
-
-    private static Set<String> srcFolder = new HashSet<>();
-    public static void setsrcFolder(String src_Folder){
-        srcFolder.add(src_Folder);
-        setLocationText.setText(src_Folder);
-    }
-
 
 
     @RequiresApi(api = Build.VERSION_CODES.R)
@@ -85,25 +73,6 @@ public class MainActivity extends AppCompatActivity {
            Log.e("CacehFolder At ",file.getAbsolutePath());
            cacheFolderPath = file.getAbsolutePath();
        }
-//       }else{
-//           try {
-//               File textFile = new File(context.getApplicationContext().getDataDir()+"/cacheFolder/testFile.txt");
-//               if(textFile.createNewFile()){
-//                   System.out.println("File Created -  testFile.txt");
-//                   BufferedWriter writer = new BufferedWriter(new FileWriter(textFile));
-//                   writer.write("Hello this is anant Writing from inside if else statements !!");
-//                   writer.close();
-//               }else{
-//                   System.out.println("File Already Exists!!");
-//                   BufferedReader reader = new BufferedReader(new FileReader(textFile));
-//                   String textFileContents = reader.readLine();
-//                   System.out.println(textFileContents);
-//
-//               }
-//           } catch (IOException e) {
-//               e.printStackTrace();
- //          }
-
     }
 
     @Override
@@ -168,60 +137,7 @@ public class MainActivity extends AppCompatActivity {
         }else{
             Toast.makeText(this, "Connect To Ftp First", Toast.LENGTH_SHORT).show();
         }
-
     }
-
-//    public void transferButton(View view){
-//        if(isFTPConnected()){
-//            ArrayList<String> transferList = TransferList.getTransferList();
-//            if(transferList!=null && transferList.size() !=0){
-//
-//                ExecutorService executorService = Executors.newSingleThreadExecutor();
-//                Handler handler = new Handler(Looper.getMainLooper());
-//                executorService.execute(() -> {
-//                    //Background Thread
-//                    Log.e("#################  TRANSFER FILE  #############","");
-//
-//                    String srcFile;
-//                    String desName;
-//                    boolean progress;
-//                    boolean FtpDirectory = myFTPClientFunctions.ftpChangeDirectory("FtpApplicationFolder");
-//
-//                    String workingDirectory = myFTPClientFunctions.ftpGetCurrentWorkingDirectory();
-//                    List<String> desExistFiles = myFTPClientFunctions.getFileList(workingDirectory);
-//
-//                    desExistFiles.forEach((desFile) ->  Log.i("target Directory files",desFile));
-//
-//                    for(String transferFile: transferList) {
-//                        Log.i("Transferring.............. ", transferFile);
-//                        srcFile = transferFile;
-//                        desName = transferFile.substring(srcFile.lastIndexOf("/") + 1);
-//
-//                        if (desExistFiles.contains(desName)) {
-//                            Log.i("File already Exist in directory, Skipped", transferFile);
-//                        } else {
-//                            progress = myFTPClientFunctions.ftpUpload(transferFile, desName, "FtpApplicationFolder");
-//                            if (progress) {
-//                                Log.i("Transfer Of File: " + srcFile, "COMPLETE");
-//                            } else Log.i("Transfer of File:", "Failed");
-//                        }
-//                    }
-//                    Log.e("#################  FILE TRANSFER COMPLETE   ################","");
-//
-//                    handler.post(() -> {
-//                        //UI Thread work here
-//                        //  String Path = srcFile.substring(0,srcFile.lastIndexOf("/"));
-//                        Toast.makeText(this, "Transfer Complete From Selected Folder ", Toast.LENGTH_SHORT).show();
-//                    });
-//                });
-//            }else{
-//                Log.e("There are No files in the Directory","");
-//                Toast.makeText(this, "Directory is Empty", Toast.LENGTH_SHORT).show();
-//            }
-//        }else{
-//            Toast.makeText(this, "Connect To Ftp First", Toast.LENGTH_SHORT).show();
-//        }
-//    }
 
     public void connectButton(View view) {
 
@@ -239,10 +155,8 @@ public class MainActivity extends AppCompatActivity {
 
                 connectionSetup(); //connect and Create default folder in /Downloads
 
-                handler.post(() -> {
-                    //UI Thread work here
-                    updateConnectStatusUI();
-                });
+                //UI Thread work here
+                handler.post(this::updateConnectStatusUI);
             }
         });
     }
