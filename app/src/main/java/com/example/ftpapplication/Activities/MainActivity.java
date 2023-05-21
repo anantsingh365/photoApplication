@@ -3,6 +3,7 @@ package com.example.ftpapplication.Activities;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.ftpapplication.Compression.ImageCompressorImpl;
 import com.example.ftpapplication.R;
+import com.example.ftpapplication.Services.ImageUploadBackgroundService;
 import com.example.ftpapplication.ftp.MyFTPClientFunctions;
 
 import java.io.BufferedReader;
@@ -73,8 +75,34 @@ public class MainActivity extends AppCompatActivity {
            Log.e("CacehFolder At ",file.getAbsolutePath());
            cacheFolderPath = file.getAbsolutePath();
        }
+
+        SharedPreferences sharedPreferences = getSharedPreferences("ftpData",MODE_PRIVATE);
+        String hostName = sharedPreferences.getString("Hostname", "");
+        String userName = sharedPreferences.getString("Username", "");
+        String password = sharedPreferences.getString("Password", "");
+        String portNumber = sharedPreferences.getString("portNumber", "");
+
+        ftpPortNumber.setText(portNumber);
+        ftphostName.setText(hostName);
+        ftpUsername.setText(userName);
+        ftpPassword.setText((password));
+
+       //foreGroundService Starting
+        if(!foregroundServiceRunning()){
+            Intent serviceIntent = new Intent(this, ImageUploadBackgroundService.class);
+            startForegroundService(serviceIntent);
+        }
     }
 
+    public boolean foregroundServiceRunning(){
+        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for(ActivityManager.RunningServiceInfo service: activityManager.getRunningServices(Integer.MAX_VALUE)) {
+            if(ImageUploadBackgroundService.class.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
     @Override
     protected void onResume(){
         super.onResume();
@@ -85,14 +113,14 @@ public class MainActivity extends AppCompatActivity {
         String password = sharedPreferences.getString("Password", "");
         String portNumber = sharedPreferences.getString("portNumber", "");
 
-       /* ftpPortNumber.setText(portNumber);
+        ftpPortNumber.setText(portNumber);
         ftphostName.setText(hostName);
         ftpUsername.setText(userName);
-        ftpPassword.setText((password));*/
-        ftpPortNumber.setText("10000");
-        ftphostName.setText("192.168.1.6");
-        ftpUsername.setText("pi");
-        ftpPassword.setText(("7611"));
+        ftpPassword.setText((password));
+//        ftpPortNumber.setText("9500");
+//        ftphostName.setText("192.168.1.96");
+//        ftpUsername.setText("pi");
+//        ftpPassword.setText(("7611"));
 
     }
 
@@ -101,6 +129,8 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("ftpData",MODE_PRIVATE);
         SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+        System.out.println("HOSTNAME that is saved is " + ftphostName.getText().toString());
 
         myEdit.putString("setLocationText",setLocationText.toString());
         myEdit.putString("ftpUsername", ftpUsername.getText().toString());
@@ -182,7 +212,6 @@ public class MainActivity extends AppCompatActivity {
         }else{
             Log.e("Connection Setup Failed","connectionSetup Method in MainActivity.java");
         }
-
     }
 
     private void updateConnectStatusUI(){

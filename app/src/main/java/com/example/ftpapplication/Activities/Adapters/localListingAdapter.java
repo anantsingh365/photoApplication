@@ -71,6 +71,7 @@ public class localListingAdapter extends androidx.recyclerview.widget.RecyclerVi
         });
         holder.relativeLayout.setOnClickListener(view -> {
             String currentPath = listData.get(position).getDescription();
+            Log.e("selectedPathIs -" , currentPath);
             File file = new File(currentPath);
             if (!file.isFile()) {
                 trimString = currentPath;
