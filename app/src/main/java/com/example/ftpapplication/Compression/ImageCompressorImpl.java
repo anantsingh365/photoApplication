@@ -40,9 +40,9 @@ public class ImageCompressorImpl implements ImageCompressor{
 
     }
 
-    public void moveToCacheFolder(String srcFile){
+    private void moveToCacheFolder(String srcFile){
         Path src= Paths.get(srcFile);
-        Path des = Paths.get(cacheFolderPath +srcFile.substring(srcFile.lastIndexOf("/") + 1));
+        Path des = Paths.get(cacheFolderPath + srcFile.substring(srcFile.lastIndexOf("/") + 1));
 
         try {
             Files.copy(src,des,REPLACE_EXISTING);

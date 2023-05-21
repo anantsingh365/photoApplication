@@ -113,14 +113,14 @@ public class MainActivity extends AppCompatActivity {
         String password = sharedPreferences.getString("Password", "");
         String portNumber = sharedPreferences.getString("portNumber", "");
 
-        ftpPortNumber.setText(portNumber);
-        ftphostName.setText(hostName);
-        ftpUsername.setText(userName);
-        ftpPassword.setText((password));
-//        ftpPortNumber.setText("9500");
-//        ftphostName.setText("192.168.1.96");
-//        ftpUsername.setText("pi");
-//        ftpPassword.setText(("7611"));
+//        ftpPortNumber.setText(portNumber);
+//        ftphostName.setText(hostName);
+//        ftpUsername.setText(userName);
+//        ftpPassword.setText((password));
+        ftpPortNumber.setText("9500");
+        ftphostName.setText("192.168.1.96");
+        ftpUsername.setText("pi");
+        ftpPassword.setText(("7611"));
 
     }
 
