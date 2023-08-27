@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class FTPTransfer {
+    public class FTPTransfer {
 
-    MyFTPClientFunctions myFTPClientFunctions = MyFTPClientFunctions.getMyFTPClientFunctions();
+        MyFTPClientFunctions myFTPClientFunctions = MyFTPClientFunctions.getMyFTPClientFunctions();
 
     public void transferFile(String srcFile) {
 
@@ -29,10 +29,17 @@ public class FTPTransfer {
                 String workingDirectory = myFTPClientFunctions.ftpGetCurrentWorkingDirectory();
                  List<String> desExistFiles = myFTPClientFunctions.getFileList(workingDirectory);
 
-                desExistFiles.forEach((desFile) ->  Log.i("target Directory files",desFile));
-
+               //  if(!desExistFiles.isEmpty()){
+                    // desExistFiles.forEach((desFile) ->  Log.i("target Directory files",desFile));
+               //  }
                 desName = srcFile.substring(srcFile.lastIndexOf("/") + 1);
-
+                if(desExistFiles == null){
+                    progress = myFTPClientFunctions.ftpUpload(srcFile, desName, "FtpApplicationFolder");
+                    if (progress) {
+                        Log.i("Transfer Of File: " + srcFile, "COMPLETE");
+                    } else Log.i("Transfer of File:", "Failed");
+                    return;
+                }
                  if (desExistFiles.contains(desName)) {
                     Log.i("File already Exist in directory, Skipped", srcFile);
                  } else {
@@ -40,10 +47,6 @@ public class FTPTransfer {
                 if (progress) {
                     Log.i("Transfer Of File: " + srcFile, "COMPLETE");
                 } else Log.i("Transfer of File:", "Failed");
-                //   }
-                //  }
-          //  });
-      //  }
     }
 }
 }

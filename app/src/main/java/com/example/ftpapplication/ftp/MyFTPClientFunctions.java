@@ -174,10 +174,10 @@ public class MyFTPClientFunctions {
 
                 if (isFile) {
                     fileList.add(name.trim());
-                    Log.i(TAG, "File : " + name);
+                  //  Log.i(TAG, "File : " + name);
                 } else {
                     fileList.add(name.trim());
-                    Log.i(TAG, "Directory : " + name);
+                  //  Log.i(TAG, "Directory : " + name);
                 }
             }
             return fileList;

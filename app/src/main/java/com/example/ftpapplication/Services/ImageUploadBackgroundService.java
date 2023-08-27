@@ -6,10 +6,8 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -19,7 +17,6 @@ import com.example.ftpapplication.ftp.MyFTPClientFunctions;
 import com.example.ftpapplication.utils.TransferList;
 
 import java.io.File;
-import java.security.Provider;
 import java.util.List;
 
 public class ImageUploadBackgroundService extends Service {
@@ -33,7 +30,6 @@ public class ImageUploadBackgroundService extends Service {
         return connectionObj.isConnected() && connectionObj.isStatus();
     }
     private void startTransfer() throws InterruptedException {
-
         // creating cache folder
         Context context = getApplicationContext();
         File file = new File(context.getApplicationContext().getDataDir()+"/cacheFolder");
@@ -46,38 +42,43 @@ public class ImageUploadBackgroundService extends Service {
             cacheFolderPath = file.getAbsolutePath();
         }
 
-
         //starting the comprssor
         if(doesConnectionExist()){
             if(ImageCompressorImpl.transferStatus()){
               //  Toast.makeText(this, "Transfer Already in Progress ", Toast.LENGTH_SHORT).show();
                  return;
             }else{
+                //putting a temporary sleep, because as soon as we have a connection this code will try to upload files
+                // but connection hasn't been properly setup yet ( checking if folder exists or other routines stuff.. )
+                Thread.sleep(5000);
                 ImageCompressorImpl compressor = ImageCompressorImpl.getCompressor();
                 compressor.setCacheFolderPath(cacheFolderPath);
 
                 // setting the transferList
-                TransferList.generateTransferList(defaultBackupLocation);
-                List<String> transferList = TransferList.getTransferList();
+                //default backuplocation is just a placeholder
+                List<String> transferList = TransferList.generateTransferList(defaultBackupLocation);
                 compressor.setTransferList(transferList);
                 Runnable runnable = compressor::startTransfer;
                 Thread thread1 = new Thread(runnable);
                 thread1.start();
                 thread1.join();
+                System.out.println("transfer thread Joined Here!!!!!!");
             }
         }else{
            // Toast.makeText(this, "Connect To Ftp First", Toast.LENGTH_SHORT).show();
         }
     }
 
-    Runnable backgroundTask = () -> {
+    Runnable backgroundServiceTask = () -> {
         while (true) {
             Log.e("Service", "Service is running...");
             try {
                 if(doesConnectionExist()){
                     startTransfer();
                 }
-                Thread.sleep(2000);
+                //how frequent the service should run.
+                long serviceFrequencyTime = 5000;
+                Thread.sleep(serviceFrequencyTime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -93,18 +94,7 @@ public class ImageUploadBackgroundService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-//        Runnable backgroundTask = () -> {
-//            while (true) {
-//                Log.e("Service", "Service is running...");
-//                try {
-//
-//                    Thread.sleep(2000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        };
-        new Thread(backgroundTask).start();
+        new Thread(backgroundServiceTask).start();
 
         final String CHANNELID = "Foreground Service ID";
         NotificationChannel channel = new NotificationChannel(
@@ -121,6 +111,7 @@ public class ImageUploadBackgroundService extends Service {
 
         startForeground(1001, notification.build());
 
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
+        //return super.onStartCommand(intent, flags, startId);
     }
 }

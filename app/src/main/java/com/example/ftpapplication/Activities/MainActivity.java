@@ -198,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
             Log.e("Working Directory", workingDirectory);
 
             if (myFTPClientFunctions.ftpChangeDirectory(workingDirectory + "Downloads")){
-                Log.e("PWD Changed!!", "True");
+                Log.e("PWD is", workingDirectory + "Downloads");
                 Log.e("Now working Directory is - ", myFTPClientFunctions.ftpGetCurrentWorkingDirectory());
             }
 

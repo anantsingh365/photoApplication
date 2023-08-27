@@ -4,6 +4,7 @@ import android.util.Log;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TransferList {
     private static ArrayList<String> transferList = new ArrayList<>();
@@ -14,7 +15,7 @@ public class TransferList {
     public static void setTransferList(ArrayList<String> transferList) {
         TransferList.transferList = transferList;
     }
-    public static void generateTransferList(String srcPath){
+    public static List<String> generateTransferList(String srcPath){
         transferList.clear();
         File myDirectory = new File(srcPath);
         File[] directories = myDirectory.listFiles();
@@ -27,5 +28,6 @@ public class TransferList {
             transferList.forEach((transferListLog) -> Log.i("transferList", transferListLog));
             Log.e("TransferList Set", "setTransferList Method MyListAdapterClass.java");
         }
+        return transferList;
     }
 }
