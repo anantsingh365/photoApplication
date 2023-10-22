@@ -18,6 +18,9 @@ import com.example.ftpapplication.utils.TransferList;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class ImageUploadBackgroundService extends Service {
 
@@ -48,9 +51,6 @@ public class ImageUploadBackgroundService extends Service {
               //  Toast.makeText(this, "Transfer Already in Progress ", Toast.LENGTH_SHORT).show();
                  return;
             }else{
-                //putting a temporary sleep, because as soon as we have a connection this code will try to upload files
-                // but connection hasn't been properly setup yet ( checking if folder exists or other routines stuff.. )
-                Thread.sleep(5000);
                 ImageCompressorImpl compressor = ImageCompressorImpl.getCompressor();
                 compressor.setCacheFolderPath(cacheFolderPath);
 
@@ -70,19 +70,14 @@ public class ImageUploadBackgroundService extends Service {
     }
 
     Runnable backgroundServiceTask = () -> {
-        while (true) {
             Log.e("Service", "Service is running...");
             try {
                 if(doesConnectionExist()){
                     startTransfer();
                 }
-                //how frequent the service should run.
-                long serviceFrequencyTime = 5000;
-                Thread.sleep(serviceFrequencyTime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
     };
 
     @Nullable
@@ -94,7 +89,8 @@ public class ImageUploadBackgroundService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        new Thread(backgroundServiceTask).start();
+        ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(1);
+        scheduledExecutorService.scheduleAtFixedRate(backgroundServiceTask, 5, 5, TimeUnit.SECONDS);
 
         final String CHANNELID = "Foreground Service ID";
         NotificationChannel channel = new NotificationChannel(
