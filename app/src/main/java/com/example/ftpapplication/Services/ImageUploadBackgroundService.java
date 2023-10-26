@@ -59,16 +59,12 @@ public class ImageUploadBackgroundService extends Service {
                 List<String> transferList = TransferList.generateTransferList(defaultBackupLocation);
                 compressor.setTransferList(transferList);
                 Runnable runnable = compressor::startTransfer;
-                Thread thread1 = new Thread(runnable);
-                thread1.start();
-                thread1.join();
-                System.out.println("transfer thread Joined Here!!!!!!");
+                compressor.startTransfer();
             }
         }else{
            // Toast.makeText(this, "Connect To Ftp First", Toast.LENGTH_SHORT).show();
         }
     }
-
     Runnable backgroundServiceTask = () -> {
             Log.e("Service", "Service is running...");
             try {
@@ -90,7 +86,7 @@ public class ImageUploadBackgroundService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(1);
-        scheduledExecutorService.scheduleAtFixedRate(backgroundServiceTask, 5, 5, TimeUnit.SECONDS);
+        scheduledExecutorService.scheduleWithFixedDelay(backgroundServiceTask, 5, 5, TimeUnit.SECONDS);
 
         final String CHANNELID = "Foreground Service ID";
         NotificationChannel channel = new NotificationChannel(
