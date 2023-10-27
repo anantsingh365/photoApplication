@@ -70,45 +70,42 @@ public class MainActivity extends AppCompatActivity {
            Log.e("CacehFolder At ",file.getAbsolutePath());
            cacheFolderPath = file.getAbsolutePath();
        }
+
+        Map<String, ?> PMap  = this.preferences.getAll();
+        PMap.forEach((k,v) ->  Log.d("Preferences", "key -> " + k + "value -> " + v));
+
+        //intially set hostName from already saved value
+        //update value whenever preference are changed
+        SharedPreferences.OnSharedPreferenceChangeListener updateHostNameOnPreferencesChangeListener =
+                (preference, Key) ->{
+                    if(Key.equals("hostname")){
+                        this.preferences = preference;
+                        final String newHostName = getPreferenceValue("hostname", preference);
+                        ftphostName.setText(newHostName);
+                    }
+                    if(Key.equals("password")){
+                        this.preferences = preference;
+                        final String newPassword = getPreferenceValue("password", preference);
+                        ftpPassword.setText(newPassword);
+                    }
+                    if(Key.equals("port")){
+                        this.preferences = preference;
+                        final String newPort = getPreferenceValue("port", preference);
+                        ftpPortNumber.setText(newPort);
+                    }
+                    if(Key.equals("username")){
+                        this.preferences = preference;
+                        final String newUserName = getPreferenceValue("username", preference);
+                        ftpUsername.setText(newUserName);
+                    }
+                };
+
+        this.preferences.registerOnSharedPreferenceChangeListener(updateHostNameOnPreferencesChangeListener);
        //foreGroundService Starting
         if(!foregroundServiceRunning()){
             Intent i = new Intent(this, ImageUploadBackgroundService.class);
             startForegroundService(i);
         }
-        Map<String, ?> PMap  = this.preferences.getAll();
-        PMap.forEach((k,v) ->  Log.d("Preferences", "key -> " + k + "value -> " + v));
-
-        //intially set hostName from already saved value
-        ftphostName.setText(loadSavedHostName(preferences));
-        ftpPassword.setText(loadSavedPassword(preferences));
-        ftpPortNumber.setText(loadSavedPort(preferences));
-
-        //update value whenever preference are changed
-        SharedPreferences.OnSharedPreferenceChangeListener updateHostNameOnPreferencesChangeListener =
-                        (preference, Key) ->{
-                            if(Key.equals("hostname")){
-                               this.preferences = preference;
-                               final String newHostName = getPreferenceValue("hostname", preference);
-                               ftphostName.setText(newHostName);
-                            }
-                            if(Key.equals("password")){
-                                this.preferences = preference;
-                                final String newPassword = getPreferenceValue("password", preference);
-                                ftpPassword.setText(newPassword);
-                            }
-                            if(Key.equals("port")){
-                                this.preferences = preference;
-                                final String newPort = getPreferenceValue("port", preference);
-                                ftpPortNumber.setText(newPort);
-                            }
-                            if(Key.equals("username")){
-                                this.preferences = preference;
-                                final String newUserName = getPreferenceValue("username", preference);
-                                ftpUsername.setText(newUserName);
-                            }
-                        };
-
-        this.preferences.registerOnSharedPreferenceChangeListener(updateHostNameOnPreferencesChangeListener);
     }
     public String loadSavedHostName(SharedPreferences preferences){
         return getPreferenceValue("hostname", preferences);
@@ -127,7 +124,6 @@ public class MainActivity extends AppCompatActivity {
         Map<String, ?> m = preference.getAll();
         String e = (String) m.get(key);
         if(e != null) {
-            //Log.i("saved "+ key + "loaded -> ,", e);
             return e;
         }
         //if no value, return empty string
