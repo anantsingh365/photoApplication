@@ -47,7 +47,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        initViews();
+        createCacheFolder();
+        myFTPClientFunctions = MyFTPClientFunctions.getMyFTPClientFunctions();
+        registerCredentialsUpdateListener();
+    }
+    private void initViews(){
         setLocationText = findViewById(R.id.setLocationText);
         setLocationButton = findViewById(R.id.setLocationButton);
         ftpPortNumber = findViewById(R.id.ftpPortNumber);
@@ -56,27 +61,16 @@ public class MainActivity extends AppCompatActivity {
         ftphostName = findViewById(R.id.hostName);
         setLocationButton = findViewById(R.id.setLocationButton);
         connectButton = findViewById(R.id.connectButton);
-        myFTPClientFunctions = MyFTPClientFunctions.getMyFTPClientFunctions();
         connectStatusText = findViewById(R.id.connectStatusTextView);
-        this.preferences= PreferenceManager.getDefaultSharedPreferences(this);
-
-       Context context = getApplicationContext();
-       File file = new File(context.getApplicationContext().getDataDir()+"/cacheFolder");
-       boolean bool = file.mkdir();
-       if(bool) {
-           System.out.println("cache folder Created " + file.getAbsolutePath());
-           cacheFolderPath = file.getAbsolutePath();
-       }else{
-           Log.e("CacehFolder At ",file.getAbsolutePath());
-           cacheFolderPath = file.getAbsolutePath();
-       }
-
+    }
+    private void registerCredentialsUpdateListener(){
+        this.preferences = PreferenceManager.getDefaultSharedPreferences(this);
         Map<String, ?> PMap  = this.preferences.getAll();
         PMap.forEach((k,v) ->  Log.d("Preferences", "key -> " + k + "value -> " + v));
 
         //intially set hostName from already saved value
         //update value whenever preference are changed
-        SharedPreferences.OnSharedPreferenceChangeListener updateHostNameOnPreferencesChangeListener =
+        SharedPreferences.OnSharedPreferenceChangeListener updateSavedCredentials =
                 (preference, Key) ->{
                     if(Key.equals("hostname")){
                         this.preferences = preference;
@@ -100,11 +94,23 @@ public class MainActivity extends AppCompatActivity {
                     }
                 };
 
-        this.preferences.registerOnSharedPreferenceChangeListener(updateHostNameOnPreferencesChangeListener);
-       //foreGroundService Starting
+        this.preferences.registerOnSharedPreferenceChangeListener(updateSavedCredentials);
+        //foreGroundService Starting
         if(!foregroundServiceRunning()){
             Intent i = new Intent(this, ImageUploadBackgroundService.class);
             startForegroundService(i);
+        }
+    }
+    private void createCacheFolder(){
+        Context context = getApplicationContext();
+        File file = new File(context.getApplicationContext().getDataDir()+"/cacheFolder");
+        boolean bool = file.mkdir();
+        if(bool) {
+            System.out.println("cache folder Created " + file.getAbsolutePath());
+            cacheFolderPath = file.getAbsolutePath();
+        }else{
+            Log.e("CacehFolder At ",file.getAbsolutePath());
+            cacheFolderPath = file.getAbsolutePath();
         }
     }
     public String loadSavedHostName(SharedPreferences preferences){
@@ -152,6 +158,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        loadCredentials();
+    }
+    private void loadCredentials(){
         ftphostName.setText(loadSavedHostName(this.preferences));
         ftpUsername.setText(loadSavedUserName(this.preferences));
         ftpPassword.setText(loadSavedPassword(this.preferences));
@@ -170,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void settingsButton(View view){
         Intent i = new Intent(MainActivity.this, SettingsActivity.class);
-      i.putExtra("key", "Hello world "); //Optional parameters
+        i.putExtra("key", "Hello world "); //Optional parameters
         startActivity(i);
     }
 
