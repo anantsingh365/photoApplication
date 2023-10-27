@@ -47,12 +47,12 @@ public class MainActivity extends AppCompatActivity {
     private EditText ftpUsername, ftpPassword, ftphostName;
     private EditText ftpPortNumber;
     private Button setLocationButton,connectButton;
-    private static  TextView setLocationText;
+    private TextView setLocationText;
     private boolean ftpConnect;
     private MyFTPClientFunctions myFTPClientFunctions;
     private TextView connectStatusText;
     private String cacheFolderPath;
-
+    private SharedPreferences preferences;
 
     @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
@@ -70,8 +70,10 @@ public class MainActivity extends AppCompatActivity {
         connectButton = findViewById(R.id.connectButton);
         myFTPClientFunctions = MyFTPClientFunctions.getMyFTPClientFunctions();
         connectStatusText = findViewById(R.id.connectStatusTextView);
+        this.preferences= PreferenceManager.getDefaultSharedPreferences(this);
 
-       Context context = getApplicationContext();
+
+        Context context = getApplicationContext();
        File file = new File(context.getApplicationContext().getDataDir()+"/cacheFolder");
        boolean bool = file.mkdir();
        if(bool) {
@@ -86,9 +88,7 @@ public class MainActivity extends AppCompatActivity {
             Intent i = new Intent(this, ImageUploadBackgroundService.class);
             startForegroundService(i);
         }
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        Map<String, ?> PMap  = preferences.getAll();
+        Map<String, ?> PMap  = this.preferences.getAll();
         PMap.forEach((k,v) ->  Log.d("Preferences", "key -> " + k + "value -> " + v));
 
         //intially set hostName from already saved value
@@ -98,21 +98,22 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.OnSharedPreferenceChangeListener updateHostNameOnPreferencesChangeListener =
                         (preference, Key) ->{
                             if(Key.equals("hostname")){
-                               getPreferenceValue("hostname", preference);
+                                this.preferences = preference;
+                               String newHostName = getPreferenceValue("hostname", preference);
+                               ftphostName.setText(newHostName);
                             }
                         };
 
-        preferences.registerOnSharedPreferenceChangeListener(updateHostNameOnPreferencesChangeListener);
+        this.preferences.registerOnSharedPreferenceChangeListener(updateHostNameOnPreferencesChangeListener);
     }
     public String loadHostName(SharedPreferences preferences){
         return getPreferenceValue("hostname", preferences);
     }
-    public String getPreferenceValue(String key, SharedPreferences preferences){
-        Map<String, ?> m = preferences.getAll();
+    public String getPreferenceValue(String key, SharedPreferences preference){
+        Map<String, ?> m = preference.getAll();
         String e = (String) m.get(key);
         if(e != null) {
-            Log.i("saved "+ key + "loaded -> ,", e);
-            ftphostName.setText(e);
+            //Log.i("saved "+ key + "loaded -> ,", e);
             return e;
         }
         //if no value, return empty string
@@ -131,26 +132,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        Map<String, ?> PMap  = preferences.getAll();
-        PMap.forEach((k,v) ->  Log.d("Preferences", "key -> " + k + "value -> " + v));
-
-        preferences.registerOnSharedPreferenceChangeListener((preference, Key) ->{
-            if(Key.equals("hostname")){
-                Map<String, ?> m = preference.getAll();
-                String e = (String) m.get("hostname");
-                if(e != null) {
-                    Log.i("hostname changed -> ", e);
-                    ftphostName.setText(e);
-                }
-            }
-        });
     }
 
     protected void onPause(){
         super.onPause();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        String newHostName = getPreferenceValue("hostname", this.preferences);
+        ftphostName.setText(newHostName);
+
+    }
     public boolean isFTPConnected(){
         return(myFTPClientFunctions.isStatus() && myFTPClientFunctions.isConnected());
     }
