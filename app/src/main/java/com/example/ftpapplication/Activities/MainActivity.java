@@ -2,11 +2,9 @@ package com.example.ftpapplication.Activities;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
 import android.app.ActivityManager;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,19 +24,9 @@ import com.example.ftpapplication.R;
 import com.example.ftpapplication.Services.ImageUploadBackgroundService;
 import com.example.ftpapplication.ftp.MyFTPClientFunctions;
 
-import org.apache.commons.net.examples.Main;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -72,8 +60,7 @@ public class MainActivity extends AppCompatActivity {
         connectStatusText = findViewById(R.id.connectStatusTextView);
         this.preferences= PreferenceManager.getDefaultSharedPreferences(this);
 
-
-        Context context = getApplicationContext();
+       Context context = getApplicationContext();
        File file = new File(context.getApplicationContext().getDataDir()+"/cacheFolder");
        boolean bool = file.mkdir();
        if(bool) {
@@ -92,23 +79,50 @@ public class MainActivity extends AppCompatActivity {
         PMap.forEach((k,v) ->  Log.d("Preferences", "key -> " + k + "value -> " + v));
 
         //intially set hostName from already saved value
-        ftphostName.setText(loadHostName(preferences));
+        ftphostName.setText(loadSavedHostName(preferences));
+        ftpPassword.setText(loadSavedPassword(preferences));
+        ftpPortNumber.setText(loadSavedPort(preferences));
 
         //update value whenever preference are changed
         SharedPreferences.OnSharedPreferenceChangeListener updateHostNameOnPreferencesChangeListener =
                         (preference, Key) ->{
                             if(Key.equals("hostname")){
-                                this.preferences = preference;
-                               String newHostName = getPreferenceValue("hostname", preference);
+                               this.preferences = preference;
+                               final String newHostName = getPreferenceValue("hostname", preference);
                                ftphostName.setText(newHostName);
+                            }
+                            if(Key.equals("password")){
+                                this.preferences = preference;
+                                final String newPassword = getPreferenceValue("password", preference);
+                                ftpPassword.setText(newPassword);
+                            }
+                            if(Key.equals("port")){
+                                this.preferences = preference;
+                                final String newPort = getPreferenceValue("port", preference);
+                                ftpPortNumber.setText(newPort);
+                            }
+                            if(Key.equals("username")){
+                                this.preferences = preference;
+                                final String newUserName = getPreferenceValue("username", preference);
+                                ftpUsername.setText(newUserName);
                             }
                         };
 
         this.preferences.registerOnSharedPreferenceChangeListener(updateHostNameOnPreferencesChangeListener);
     }
-    public String loadHostName(SharedPreferences preferences){
+    public String loadSavedHostName(SharedPreferences preferences){
         return getPreferenceValue("hostname", preferences);
     }
+    public String loadSavedPassword(SharedPreferences preferences){
+        return getPreferenceValue("password", preferences);
+    }
+    public String loadSavedPort(SharedPreferences preferences){
+        return getPreferenceValue("port", preferences);
+    }
+    public String loadSavedUserName(SharedPreferences preferences){
+        return getPreferenceValue("username", preferences);
+    }
+
     public String getPreferenceValue(String key, SharedPreferences preference){
         Map<String, ?> m = preference.getAll();
         String e = (String) m.get(key);
@@ -134,17 +148,20 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
     }
 
-    protected void onPause(){
+    @Override
+    public void onPause(){
         super.onPause();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        String newHostName = getPreferenceValue("hostname", this.preferences);
-        ftphostName.setText(newHostName);
-
+        ftphostName.setText(loadSavedHostName(this.preferences));
+        ftpUsername.setText(loadSavedUserName(this.preferences));
+        ftpPassword.setText(loadSavedPassword(this.preferences));
+        ftpPortNumber.setText(loadSavedPort(this.preferences));
     }
+
     public boolean isFTPConnected(){
         return(myFTPClientFunctions.isStatus() && myFTPClientFunctions.isConnected());
     }
@@ -156,9 +173,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void settingsButton(View view){
-        Intent myIntent = new Intent(MainActivity.this, SettingsActivity.class);
-      myIntent.putExtra("key", "Hello world "); //Optional parameters
-        startActivity(myIntent);
+        Intent i = new Intent(MainActivity.this, SettingsActivity.class);
+      i.putExtra("key", "Hello world "); //Optional parameters
+        startActivity(i);
     }
 
     public void transferButton(View view){
@@ -177,10 +194,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void connectButton(View view) {
-
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
-
         executor.execute(() -> {
             //Background Thread
             if (isFTPConnected()){
@@ -190,10 +205,8 @@ public class MainActivity extends AppCompatActivity {
                         , ftpPassword.getText().toString()
                         ,Integer.parseInt(ftpPortNumber.getText().toString()));
 
-                connectionSetup(); //connect and Create default folder in /Downloads
-
-                //UI Thread work here
-                handler.post(this::updateConnectStatusUI);
+                /*connect and Create default folder in /Downloads*/ connectionSetup();
+                /*UI Thread work here */ handler.post(this::updateConnectStatusUI);
             }
         });
     }
