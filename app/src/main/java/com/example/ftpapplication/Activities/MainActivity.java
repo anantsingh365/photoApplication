@@ -107,8 +107,10 @@ public class MainActivity extends AppCompatActivity {
             if(Key.equals("hostname")){
                 Map<String, ?> m = preference.getAll();
                 String e = (String) m.get("hostname");
-                Log.i("hostname changed -> ", e);
-                ftphostName.setText(e);
+                if(e != null) {
+                  Log.i("hostname changed -> ", e);
+                  ftphostName.setText(e);
+                }
             }
         });
     }

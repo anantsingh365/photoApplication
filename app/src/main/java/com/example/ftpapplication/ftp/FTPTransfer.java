@@ -13,7 +13,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
     public class FTPTransfer {
-
         MyFTPClientFunctions myFTPClientFunctions = MyFTPClientFunctions.getMyFTPClientFunctions();
 
     public void transferFile(String srcFile) {

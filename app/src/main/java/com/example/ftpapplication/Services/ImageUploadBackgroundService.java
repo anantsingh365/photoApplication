@@ -26,7 +26,6 @@ public class ImageUploadBackgroundService extends Service {
 
     private final String defaultBackupLocation = "/storage/emulated/0/Download";
     private String cacheFolderPath;
-
     private MyFTPClientFunctions connectionObj = MyFTPClientFunctions.getMyFTPClientFunctions();
 
     private boolean doesConnectionExist(){

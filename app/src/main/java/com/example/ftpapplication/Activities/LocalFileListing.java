@@ -17,7 +17,6 @@ import java.util.ArrayList;
 
 public class LocalFileListing extends AppCompatActivity {
 
-
     private static ArrayList<LocalFileListView> localFileListData;
     private static localListingAdapter adapter;
     private static String pathStringBuffer;

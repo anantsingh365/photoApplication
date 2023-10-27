@@ -16,18 +16,11 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_frag_container);
-
-        // below line is to change
-        // the title of our action bar.
         getSupportActionBar().setTitle("Settings");
-
-        // below line is used to check if
-        // frame layout is empty or not.
         if (findViewById(R.id.idFrameLayout) != null) {
             if (savedInstanceState != null) {
                 return;
             }
-            // below line is to inflate our fragment.
             getSupportFragmentManager().beginTransaction().add(R.id.idFrameLayout, new Settings()).commit();
         }
     }

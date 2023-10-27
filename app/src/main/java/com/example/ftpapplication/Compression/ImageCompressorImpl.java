@@ -82,24 +82,19 @@ public class ImageCompressorImpl implements ImageCompressor{
     }
 
     private ImageCompressorImpl(){}
-
     public static ImageCompressorImpl getCompressor(){
         return compressor;
     }
-
     @Override
     public void onTransferComplete(){
         this.transferStatus = false;
     }
-
     public static boolean transferStatus(){
         return transferStatus;
     }
-
     public void setTransferList(List<String> transferList){
         this.transferList = transferList;
     }
-
     public void setCacheFolderPath(String cacheFolderPath){
         this.cacheFolderPath = cacheFolderPath;
     }

@@ -16,12 +16,9 @@ import android.util.Log;
 public class MyFTPClientFunctions {
 
     private static MyFTPClientFunctions myFTPClientFunctions;
-
-
     private MyFTPClientFunctions(){
 
     }
-
     public static MyFTPClientFunctions getMyFTPClientFunctions(){
         if(myFTPClientFunctions == null){
             myFTPClientFunctions = new MyFTPClientFunctions();
@@ -29,15 +26,10 @@ public class MyFTPClientFunctions {
         }
         return myFTPClientFunctions;
     }
-
-
     private static final String TAG = "MyFTPClientFunctions";
     private FTPClient mFTPClient = null;
-
     private boolean status = false;
     private boolean isConnected = false;
-
-
     public boolean isStatus() {
         return status;
     }
@@ -45,7 +37,6 @@ public class MyFTPClientFunctions {
    /* public void setStatus(boolean status) {
         this.status = status;
     }*/
-
     public boolean isConnected() {
         return isConnected;
     }
@@ -53,8 +44,6 @@ public class MyFTPClientFunctions {
    /* public void setConnected(boolean connected) {
         isConnected = connected;
     }*/
-
-
     // Method to connect to FTP server:
     public boolean ftpConnect(String host, String username, String password,
                               int port) {
