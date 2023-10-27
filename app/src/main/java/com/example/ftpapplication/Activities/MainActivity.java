@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         //intially set hostName from already saved value
         //update value whenever preference are changed
-        SharedPreferences.OnSharedPreferenceChangeListener updateSavedCredentials =
+        SharedPreferences.OnSharedPreferenceChangeListener credentialsChangeListener =
                 (preference, Key) ->{
                     if(Key.equals("hostname")){
                         this.preferences = preference;
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 };
 
-        this.preferences.registerOnSharedPreferenceChangeListener(updateSavedCredentials);
+        this.preferences.registerOnSharedPreferenceChangeListener(credentialsChangeListener);
         //foreGroundService Starting
         if(!foregroundServiceRunning()){
             Intent i = new Intent(this, ImageUploadBackgroundService.class);
@@ -113,20 +113,20 @@ public class MainActivity extends AppCompatActivity {
             cacheFolderPath = file.getAbsolutePath();
         }
     }
-    public String loadSavedHostName(SharedPreferences preferences){
+    private String loadSavedHostName(SharedPreferences preferences){
         return getPreferenceValue("hostname", preferences);
     }
-    public String loadSavedPassword(SharedPreferences preferences){
+    private String loadSavedPassword(SharedPreferences preferences){
         return getPreferenceValue("password", preferences);
     }
-    public String loadSavedPort(SharedPreferences preferences){
+    private String loadSavedPort(SharedPreferences preferences){
         return getPreferenceValue("port", preferences);
     }
-    public String loadSavedUserName(SharedPreferences preferences){
+    private String loadSavedUserName(SharedPreferences preferences){
         return getPreferenceValue("username", preferences);
     }
 
-    public String getPreferenceValue(String key, SharedPreferences preference){
+    private String getPreferenceValue(String key, SharedPreferences preference){
         Map<String, ?> m = preference.getAll();
         String e = (String) m.get(key);
         if(e != null) {
@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
         return "";
     }
 
-    public boolean foregroundServiceRunning(){
+    private boolean foregroundServiceRunning(){
         ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for(ActivityManager.RunningServiceInfo service: activityManager.getRunningServices(Integer.MAX_VALUE)) {
             if(ImageUploadBackgroundService.class.getName().equals(service.service.getClassName())) {
@@ -158,16 +158,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        loadCredentials();
+        loadSavedCredentials();
     }
-    private void loadCredentials(){
+    private void loadSavedCredentials(){
         ftphostName.setText(loadSavedHostName(this.preferences));
         ftpUsername.setText(loadSavedUserName(this.preferences));
         ftpPassword.setText(loadSavedPassword(this.preferences));
         ftpPortNumber.setText(loadSavedPort(this.preferences));
     }
 
-    public boolean isFTPConnected(){
+    private boolean isFTPConnected(){
         return(myFTPClientFunctions.isStatus() && myFTPClientFunctions.isConnected());
     }
 

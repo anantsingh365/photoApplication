@@ -26,7 +26,7 @@ import java.util.concurrent.Executors;
                 boolean FtpDirectory = myFTPClientFunctions.ftpChangeDirectory("FtpApplicationFolder");
 
                 String workingDirectory = myFTPClientFunctions.ftpGetCurrentWorkingDirectory();
-                 List<String> desExistFiles = myFTPClientFunctions.getFileList(workingDirectory);
+                List<String> desExistFiles = myFTPClientFunctions.getFileList(workingDirectory);
 
                //  if(!desExistFiles.isEmpty()){
                     // desExistFiles.forEach((desFile) ->  Log.i("target Directory files",desFile));
