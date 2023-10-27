@@ -2,6 +2,8 @@ package com.example.ftpapplication.Activities;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 
 import android.app.ActivityManager;
 import android.app.ProgressDialog;
@@ -24,6 +26,8 @@ import com.example.ftpapplication.R;
 import com.example.ftpapplication.Services.ImageUploadBackgroundService;
 import com.example.ftpapplication.ftp.MyFTPClientFunctions;
 
+import org.apache.commons.net.examples.Main;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -31,7 +35,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -82,16 +88,29 @@ public class MainActivity extends AppCompatActivity {
         String password = sharedPreferences.getString("Password", "");
         String portNumber = sharedPreferences.getString("portNumber", "");
 
-        ftpPortNumber.setText(portNumber);
-        ftphostName.setText(hostName);
-        ftpUsername.setText(userName);
-        ftpPassword.setText((password));
+//        ftpPortNumber.setText(portNumber);
+//        ftphostName.setText(hostName);
+//        ftpUsername.setText(userName);
+//        ftpPassword.setText((password));
 
        //foreGroundService Starting
         if(!foregroundServiceRunning()){
-            Intent serviceIntent = new Intent(this, ImageUploadBackgroundService.class);
-            startForegroundService(serviceIntent);
+            Intent i = new Intent(this, ImageUploadBackgroundService.class);
+            startForegroundService(i);
         }
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        Map<String, ?> PMap  = preferences.getAll();
+        PMap.forEach((k,v) ->  Log.d("Preferences", "key -> " + k + "value -> " + v));
+
+        preferences.registerOnSharedPreferenceChangeListener((preference, Key) ->{
+            if(Key.equals("hostname")){
+                Map<String, ?> m = preference.getAll();
+                String e = (String) m.get("hostname");
+                Log.i("hostname changed -> ", e);
+                ftphostName.setText(e);
+            }
+        });
     }
 
     public boolean foregroundServiceRunning(){
@@ -117,11 +136,10 @@ public class MainActivity extends AppCompatActivity {
 //        ftphostName.setText(hostName);
 //        ftpUsername.setText(userName);
 //        ftpPassword.setText((password));
-        ftpPortNumber.setText("9500");
-        ftphostName.setText("192.168.1.96");
-        ftpUsername.setText("pi");
-        ftpPassword.setText(("7611"));
-
+       // ftpPortNumber.setText("9500");
+       // ftphostName.setText("192.168.1.6");
+      //  ftpUsername.setText("pi");
+      //  ftpPassword.setText(("7611"));
     }
 
     protected void onPause(){
@@ -130,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("ftpData",MODE_PRIVATE);
         SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        System.out.println("HOSTNAME that is saved is " + ftphostName.getText().toString());
+      //  System.out.println("HOSTNAME that is saved is " + ftphostName.getText().toString());
 
         myEdit.putString("setLocationText",setLocationText.toString());
         myEdit.putString("ftpUsername", ftpUsername.getText().toString());
@@ -153,6 +171,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void settingsButton(View view){
+        Intent myIntent = new Intent(MainActivity.this, SettingsActivity.class);
+      myIntent.putExtra("key", "Hello world "); //Optional parameters
+        startActivity(myIntent);
+    }
 
     public void transferButton(View view){
         if(ftpConnect){

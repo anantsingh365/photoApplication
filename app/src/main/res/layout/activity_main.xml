@@ -20,7 +20,7 @@
         app:layout_constraintHorizontal_bias="0.507"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.333" />
+        app:layout_constraintVertical_bias="0.285" />
 
     <Button
         android:id="@+id/setLocationButton"
@@ -44,15 +44,15 @@
         android:layout_marginStart="101dp"
         android:layout_marginEnd="100dp"
         android:ems="10"
-        android:hint="Username"
 
+        android:hint="Username"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.507"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.429" />
+        app:layout_constraintVertical_bias="0.385" />
 
     <EditText
         android:id="@+id/ftpPassword"
@@ -66,7 +66,7 @@
         app:layout_constraintHorizontal_bias="0.519"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.53" />
+        app:layout_constraintVertical_bias="0.499" />
 
     <TextView
         android:id="@+id/setLocationText"
@@ -89,12 +89,15 @@
         android:layout_width="178dp"
         android:layout_height="49dp"
         android:layout_marginStart="64dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
         android:onClick="connectButton"
         android:text="Connect"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/transfer_Button"
+        app:layout_constraintEnd_toStartOf="@+id/connectStatusTextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.734" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <EditText
         android:id="@+id/ftpPortNumber"
@@ -108,39 +111,49 @@
         app:layout_constraintHorizontal_bias="0.243"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.628" />
+        app:layout_constraintVertical_bias="0.595" />
 
     <Button
         android:id="@+id/transfer_Button"
         android:layout_width="153dp"
         android:layout_height="49dp"
         android:layout_marginStart="160dp"
-        android:layout_marginTop="17dp"
         android:layout_marginEnd="157dp"
-        android:layout_marginBottom="114dp"
         android:onClick="transferButton"
         android:text="Transfer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.611"
+        app:layout_constraintHorizontal_bias="0.525"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/connectButton"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.823" />
 
     <TextView
         android:id="@+id/connectStatusTextView"
         android:layout_width="112dp"
         android:layout_height="29dp"
         android:layout_marginStart="35dp"
-        android:layout_marginTop="102dp"
         android:layout_marginEnd="57dp"
-        android:layout_marginBottom="193dp"
+        android:layout_marginBottom="26dp"
         android:text="Not Connected"
+        app:layout_constraintBottom_toTopOf="@+id/transfer_Button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.542"
+        app:layout_constraintStart_toEndOf="@+id/connectButton"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.985" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="settingsButton"
+        android:text="Button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.485"
-        app:layout_constraintStart_toEndOf="@+id/connectButton"
-        app:layout_constraintTop_toBottomOf="@+id/ftpPassword"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintHorizontal_bias="0.876"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.927" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
