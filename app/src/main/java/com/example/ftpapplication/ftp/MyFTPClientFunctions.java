@@ -9,6 +9,9 @@ import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
+import org.apache.commons.net.io.CopyStreamAdapter;
+import org.apache.commons.net.io.CopyStreamEvent;
+import org.apache.commons.net.io.CopyStreamListener;
 
 import android.content.Context;
 import android.util.Log;
@@ -261,16 +264,29 @@ public class MyFTPClientFunctions {
      * be upload to
      */
     public boolean ftpUpload(String srcFilePath, String desFileName,
-                             String desDirectory) {
+                             String desDirectory, CopyStreamAdapter listener2) {
         boolean status = false;
         try {
             FileInputStream srcFileStream = new FileInputStream(srcFilePath);
 
+            CopyStreamListener listener = new CopyStreamAdapter(){
+                int a =0;
+                @Override
+                public void bytesTransferred(long totalBytesTransferred, int bytesTransferred, long streamSize){
+                    if(a>10){
+                        Log.i("Bytes Transferred - ", String.valueOf(totalBytesTransferred));
+                        a=0;
+                    }else{
+                      ++a;
+                    }
+
+                }
+            };
+            mFTPClient.setCopyStreamListener(listener);
             // change working directory to the destination directory
              //if (ftpChangeDirectory(desDirectory)) {
             status = mFTPClient.storeFile(desFileName, srcFileStream);
            //  }
-
             srcFileStream.close();
 
             return status;

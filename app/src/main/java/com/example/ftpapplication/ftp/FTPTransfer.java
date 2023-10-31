@@ -33,7 +33,7 @@ import java.util.concurrent.Executors;
                //  }
                 desName = srcFile.substring(srcFile.lastIndexOf("/") + 1);
                 if(desExistFiles == null){
-                    progress = myFTPClientFunctions.ftpUpload(srcFile, desName, "FtpApplicationFolder");
+                    progress = myFTPClientFunctions.ftpUpload(srcFile, desName, "FtpApplicationFolder", null);
                     if (progress) {
                         Log.i("Transfer Of File: " + srcFile, "COMPLETE");
                     } else Log.i("Transfer of File:", "Failed");
@@ -42,7 +42,7 @@ import java.util.concurrent.Executors;
                  if (desExistFiles.contains(desName)) {
                     Log.i("File already Exist in directory, Skipped", srcFile);
                  } else {
-                progress = myFTPClientFunctions.ftpUpload(srcFile, desName, "FtpApplicationFolder");
+                progress = myFTPClientFunctions.ftpUpload(srcFile, desName, "FtpApplicationFolder", null);
                 if (progress) {
                     Log.i("Transfer Of File: " + srcFile, "COMPLETE");
                 } else Log.i("Transfer of File:", "Failed");

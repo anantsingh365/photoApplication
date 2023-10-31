@@ -51,44 +51,46 @@ public class MainActivity extends AppCompatActivity {
         createCacheFolder();
         myFTPClientFunctions = MyFTPClientFunctions.getMyFTPClientFunctions();
         registerCredentialsUpdateListener();
+
+        //first screen of the app, start the foreground service
+        if(!foregroundServiceRunning()){
+            Intent i = new Intent(this, ImageUploadBackgroundService.class);
+            startForegroundService(i);
+        }
     }
     private void initViews(){
-        setLocationText = findViewById(R.id.setLocationText);
-        setLocationButton = findViewById(R.id.setLocationButton);
-        ftpPortNumber = findViewById(R.id.ftpPortNumber);
-        ftpUsername =   findViewById(R.id.ftpUsername);
-        ftpPassword =   findViewById(R.id.ftpPassword);
-        ftphostName = findViewById(R.id.hostName);
-        setLocationButton = findViewById(R.id.setLocationButton);
-        connectButton = findViewById(R.id.connectButton);
-        connectStatusText = findViewById(R.id.connectStatusTextView);
+        this.setLocationText= findViewById(R.id.setLocationText);
+        this.ftpPortNumber = findViewById(R.id.ftpPortNumber);
+        this.setLocationButton = findViewById(R.id.setLocationButton);
+        this.ftpUsername =   findViewById(R.id.ftpUsername);
+        this.ftpPassword =   findViewById(R.id.ftpPassword);
+        this.ftphostName = findViewById(R.id.hostName);
+        this.setLocationButton = findViewById(R.id.setLocationButton);
+        this.connectButton = findViewById(R.id.connectButton);
+        this.connectStatusText = findViewById(R.id.connectStatusTextView);
     }
     private void registerCredentialsUpdateListener(){
         this.preferences = PreferenceManager.getDefaultSharedPreferences(this);
         Map<String, ?> PMap  = this.preferences.getAll();
-        PMap.forEach((k,v) ->  Log.d("Preferences", "key -> " + k + "value -> " + v));
+        PMap.forEach((k,v) -> Log.i("Saved Preferences", "key -> " + k + "value -> " + v));
 
-        //intially set hostName from already saved value
         //update value whenever preference are changed
-        SharedPreferences.OnSharedPreferenceChangeListener credentialsChangeListener =
+        final SharedPreferences.OnSharedPreferenceChangeListener credentialsChangeListener =
                 (preference, Key) ->{
                     if(Key.equals("hostname")){
-                        this.preferences = preference;
+                        //get updated value, set it to view.
                         final String newHostName = getPreferenceValue("hostname", preference);
                         ftphostName.setText(newHostName);
                     }
                     if(Key.equals("password")){
-                        this.preferences = preference;
                         final String newPassword = getPreferenceValue("password", preference);
                         ftpPassword.setText(newPassword);
                     }
                     if(Key.equals("port")){
-                        this.preferences = preference;
                         final String newPort = getPreferenceValue("port", preference);
                         ftpPortNumber.setText(newPort);
                     }
                     if(Key.equals("username")){
-                        this.preferences = preference;
                         final String newUserName = getPreferenceValue("username", preference);
                         ftpUsername.setText(newUserName);
                     }
@@ -161,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
         loadSavedCredentials();
     }
     private void loadSavedCredentials(){
+        //intially set credentials from already saved value
         ftphostName.setText(loadSavedHostName(this.preferences));
         ftpUsername.setText(loadSavedUserName(this.preferences));
         ftpPassword.setText(loadSavedPassword(this.preferences));
@@ -179,12 +182,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void settingsButton(View view){
         Intent i = new Intent(MainActivity.this, SettingsActivity.class);
-        i.putExtra("key", "Hello world "); //Optional parameters
         startActivity(i);
     }
 
     public void transferButton(View view){
-        if(ftpConnect){
+        if(this.ftpConnect){
             if(ImageCompressorImpl.transferStatus()){
                 Toast.makeText(this, "Transfer Already in Progress ", Toast.LENGTH_SHORT).show();
                 // return;
